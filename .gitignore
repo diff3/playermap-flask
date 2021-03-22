@@ -1,0 +1,5 @@
+assets
+.DS_Store
+config.conf
+*.pyc
+__pycache__

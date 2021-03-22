@@ -1,0 +1,6 @@
+[NETWORK]
+HOST=localhost
+USER=alpha-core
+PASS=password
+PORT=3306
+DATABASE=alpha_realm

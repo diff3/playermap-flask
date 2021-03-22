@@ -1,0 +1,14 @@
+bidict==0.21.2
+click==7.1.2
+configparser==5.0.2
+Flask==1.1.2
+Flask-SocketIO==5.0.1
+greenlet==1.0.0
+itsdangerous==1.1.0
+Jinja2==2.11.3
+MarkupSafe==1.1.1
+PyMySQL==1.0.2
+python-engineio==4.0.1
+python-socketio==5.1.0
+SQLAlchemy==1.4.2
+Werkzeug==1.0.1
