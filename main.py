@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 from flask_socketio import SocketIO, emit
 from flask import Flask, render_template, url_for, copy_current_request_context
 from time import sleep
