@@ -66,4 +66,14 @@ $(document).ready(function() {
     //$("#world").html(test);
 
   });
+
+
+  $('#btnSubmit').on('click', function() {
+    socket.emit('message_from_browser', 'Hello from browser');
+    console.log("Sending: Hello from browser");
+  });
+
+  socket.on('message_from_server', function(msg) {
+    console.log("Got this: " + msg);
+  });
 });

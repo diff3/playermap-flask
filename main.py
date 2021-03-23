@@ -29,14 +29,14 @@ def index():
 
 def player_position():
     while not thread_stop_event.isSet():
-        # socketio.emit('newposition', World().get_creature_position(), namespace='/playermap') # noqa
-        # socketio.emit('newposition', Realm().get_player_position(), namespace='/playermap') # noqa
         # socketio.emit('newposition', Dbc().get_taxi_nodes(), namespace='/playermap') # noqa
-        # socketio.emit('newposition', World().get_worldport(), namespace='/playermap') # noqa
+        # socketio.emit('newposition', Dbc().get_area_triggers(), namespace='/playermap') # noqa
+        # socketio.emit('newposition', World().get_creature_position(), namespace='/playermap') # noqa
+        socketio.emit('newposition', World().get_worldport(), namespace='/playermap') # noqa
         # socketio.emit('newposition', World().get_gameobjects(), namespace='/playermap') # noqa
-        socketio.emit('newposition', Dbc().get_area_triggers(), namespace='/playermap') # noqa
+        # socketio.emit('newposition', Realm().get_player_position(), namespace='/playermap') # noqa
 
-        socketio.sleep(5)
+        socketio.sleep(60)
 
 
 @socketio.on('connect', namespace='/playermap')
@@ -44,7 +44,7 @@ def playermap_connect():
     global thread
     print('Client connected')
 
-    if not thread.isAlive():
+    if not thread.is_alive():
         print("Starting Thread")
         thread = socketio.start_background_task(player_position)
 
@@ -52,6 +52,11 @@ def playermap_connect():
 @socketio.on('disconnect', namespace='/playermap')
 def test_disconnect():
     print('Client disconnected')
+
+
+@socketio.on('message_from_browser', namespace='/playermap')
+def message_from_browser(message):
+    emit('message_from_server', "Hello from server", broadcast=True)
 
 
 if __name__ == '__main__':

@@ -39,7 +39,9 @@ class World:
 
     def get_creature_position(self):
         records = World.session.query(SpawnsCreatures).filter(or_(
-            SpawnsCreatures.map == '0', SpawnsCreatures.map == '1')).limit(1000).all()
+            SpawnsCreatures.map == '0',
+            SpawnsCreatures.map == '1',
+            SpawnsCreatures.ignored == 0)).limit(57000).all()
         # .limit(1000)
 
         World.session.commit()
@@ -57,7 +59,8 @@ class World:
 
     def get_worldport(self):
         records = World.session.query(Worldports).filter(or_(
-            Worldports.map == '0', Worldports.map == '1')).all()
+            Worldports.map == '0',
+            Worldports.map == '1')).all()
 
         World.session.commit()
 
@@ -74,7 +77,9 @@ class World:
 
     def get_gameobjects(self):
         records = World.session.query(SpawnsGameobjects).filter(or_(
-            SpawnsGameobjects.spawn_map == '0', SpawnsGameobjects.spawn_map == '1')).all()
+            SpawnsGameobjects.spawn_map == '0',
+            SpawnsGameobjects.spawn_map == '1',
+            SpawnsGameobjects.ignored == 0)).all()
 
         World.session.commit()
 
@@ -88,8 +93,6 @@ class World:
             })
 
         return lst
-
-
 
 
 class Dbc:
