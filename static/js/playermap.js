@@ -3,7 +3,7 @@ function _pos() {
   this.y = 0;
 }
 
-function get_player_position(x, y, m) {
+function get_position(x, y, m) {
   pos = new _pos()
 
   x = Math.round(x);
@@ -25,7 +25,7 @@ function get_player_position(x, y, m) {
       pos.y = 390 - xpos;
       break;
     default:
-      pos.x = 194 - ypos;
+      pos.x = 594 - ypos;
       pos.y = 398 - xpos;
 
   }
@@ -57,11 +57,13 @@ $(document).ready(function() {
       */
 
       map = parseInt(position[i]['map'])
-      pos = get_player_position(position[i]['position_x'], position[i]['position_y'], map);
+      pos = get_position(position[i]['position_x'], position[i]['position_y'], map);
 
-      test += '<img src="/static/img/map/allia.gif" id="pointsOldworld" style="position: absolute; border: 0px; left: ' + pos.x + 'px; top: ' + pos.y + 'px;" \>';
+      test = '<img src="/static/img/map/allia.gif" style="position: absolute; height: 7px; width: 7px; border: 0px; z-index: 100; left: ' + pos.x + 'px; top: ' + pos.y + 'px;" \>';
+      // test = '<img src="/static/img/map/allia.gif" id="pointsOldworld" style="position: absolute; width: 7px; height: 7px; border: 0px; left: ' + pos.x + 'px; top: ' + pos.y + 'px;" \>';
+      $("#world").append(test);
     }
-    $("#world").html(test);
+    //$("#world").html(test);
 
   });
 });

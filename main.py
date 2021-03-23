@@ -3,7 +3,7 @@ from flask import Flask, render_template, url_for, copy_current_request_context
 from time import sleep
 from threading import Thread, Event
 
-from database.realmd import Realm
+from database.queryHandler import Realm, World
 import configparser
 
 __author__ = 'entropy'
@@ -26,9 +26,9 @@ def index():
 
 def player_position():
     while not thread_stop_event.isSet():
-        socketio.emit('newposition', Realm.get_player_position(),
+        socketio.emit('newposition', World.get_creature_position(),
                       namespace='/playermap')
-        socketio.sleep(1)
+        socketio.sleep(5)
 
 
 @socketio.on('connect', namespace='/playermap')

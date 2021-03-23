@@ -1,27 +1,35 @@
 body {
-    margin-left: 0px;
-    margin-top: 0px;
-    margin-right: 0px;
-    margin-bottom: 0px;
-    color: #EABA28;
-    background-color: #000000;
+  margin-left: 0px;
+  margin-top: 0px;
+  margin-right: 0px;
+  margin-bottom: 0px;
+  color: #EABA28;
+  background-color: #000000;
 }
+
 #world {
-    position: absolute;
-    height: 732px;
-    width: 966px;
-    left: 50%;
-    margin-left: -483px;
-    background-image: url(/static/img/map/azeroth.jpg);
-    background-repeat: no-repeat;
-    z-index: 10;
+  position: absolute;
+  height: 732px;
+  width: 966px;
+  left: 50%;
+  margin-left: -483px;
+  background-image: url(/static/img/map/azeroth.jpg);
+  background-repeat: no-repeat;
+  z-index: 10;
 }
 
 #pointsOldworld {
     position: absolute;
     height: 732px;
     width: 966px;
-    left: 50%;
     margin-left: -483px;
     z-index: 100;
+}
+
+.icon {
+  position: absolute;
+  height: 7px;
+  width: 7px;
+  border: 0px;
+  z-index: 100;
 }
