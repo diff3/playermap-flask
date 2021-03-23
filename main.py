@@ -29,8 +29,8 @@ def index():
 
 def player_position():
     while not thread_stop_event.isSet():
-        socketio.emit('newposition', World.get_creature_position(),
-                      namespace='/playermap')
+        # socketio.emit('newposition', World().get_creature_position(), namespace='/playermap') # noqa
+        socketio.emit('newposition', Realm().get_player_position(), namespace='/playermap') # noqa
         socketio.sleep(5)
 
 

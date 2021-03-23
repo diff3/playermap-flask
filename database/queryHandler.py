@@ -4,35 +4,17 @@
 
 from database.model.realm import Characters
 from database.model.world import SpawnsCreatures
-from sqlalchemy import create_engine,  or_
-from sqlalchemy.orm import sessionmaker
-import configparser
-
-config = configparser.ConfigParser()
-config.read('/Users/mape0148/projekt/alpha-core/playermap-flask/config.conf')  # noqa
-network = dict(config.items('NETWORK'))
-
-engine = create_engine(
-    'mysql+pymysql://{}:{}@{}:{}/{}'.format(
-        network['user'],
-        network['pass'],
-        network['host'],
-        network['port'],
-        'alpha_world')
-)
-
-
-Session = sessionmaker(bind=engine)
-session = Session()
+from database.connection import ConnectDatabase
+from sqlalchemy import or_
 
 
 class Realm:
-    def __init__():
-        pass
+    def __init__(self):
+        Realm.session = ConnectDatabase("alpha_realm").connect()
 
-    def get_player_position():
-        records = session.query(Characters).filter(Characters.map).all()
-        session.commit()
+    def get_player_position(self):
+        records = Realm.session.query(Characters).all()
+        Realm.session.commit()
 
         lst = list()
 
@@ -52,15 +34,15 @@ class Realm:
 
 
 class World:
-    def __init__():
-        pass
+    def __init__(self):
+        World.session = ConnectDatabase("alpha_world").connect()
 
-    def get_creature_position():
-        records = session.query(SpawnsCreatures).filter(or_(
+    def get_creature_position(self):
+        records = World.session.query(SpawnsCreatures).filter(or_(
             SpawnsCreatures.map == '0', SpawnsCreatures.map == '1')).limit(1000).all()
         # .limit(1000)
 
-        session.commit()
+        World.session.commit()
 
         lst = list()
 
