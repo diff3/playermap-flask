@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-
 from database.model.realm import Characters
 from database.model.world import SpawnsCreatures
+from database.model.dbc import TaxiNode
 from database.connection import ConnectDatabase
 from sqlalchemy import or_
 
@@ -51,6 +51,28 @@ class World:
                 'position_x': record.position_x,
                 'position_y': record.position_y,
                 'map': record.map,
+            })
+
+        return lst
+
+
+class Dbc:
+    def __init__(self):
+        Dbc.session = ConnectDatabase("alpha_dbc").connect()
+
+    def get_taxi_nodes(self):
+        records = Dbc.session.query(TaxiNode).all()
+
+        Dbc.session.commit()
+
+        lst = list()
+
+        for record in records:
+            lst.append({
+                'position_x': record.X,
+                'position_y': record.Y,
+                'map': record.ContinentID,
+                'name': record.Name_enUS,
             })
 
         return lst

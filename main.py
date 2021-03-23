@@ -6,7 +6,7 @@ from flask import Flask, render_template, url_for, copy_current_request_context
 from time import sleep
 from threading import Thread, Event
 
-from database.queryHandler import Realm, World
+from database.queryHandler import Realm, World, Dbc
 import configparser
 
 __author__ = 'entropy'
@@ -30,7 +30,8 @@ def index():
 def player_position():
     while not thread_stop_event.isSet():
         # socketio.emit('newposition', World().get_creature_position(), namespace='/playermap') # noqa
-        socketio.emit('newposition', Realm().get_player_position(), namespace='/playermap') # noqa
+        # socketio.emit('newposition', Realm().get_player_position(), namespace='/playermap') # noqa
+        socketio.emit('newposition', Dbc().get_taxi_nodes(), namespace='/playermap') # noqa
         socketio.sleep(5)
 
 
