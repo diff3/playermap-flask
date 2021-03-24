@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from database.model.realm import Characters
-from database.model.world import *
-from database.model.dbc import TaxiNode, AreaTrigger
+from database.model.world import * # noqa
+from database.model.dbc import TaxiNode, AreaTrigger # noqa
 from database.connection import ConnectDatabase
 from sqlalchemy import or_
 from calculations import Azeroth

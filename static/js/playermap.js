@@ -40,8 +40,8 @@ $(document).ready(function() {
     // show info on mouse click
     $('#world').on('click', ".location", function() {
       ID = $(this).attr('id')
-      s = position[ID]['id'] + "</br>" + position[ID]['name'] + "</br>posx: " + position[ID]['position_x'] + "</br>posy: " + position[ID]['position_y'];
-      $('#mouse_click_info').text(s);
+      s = "ID: " + position[ID]['id'] + "<br/>Name:" + position[ID]['name'] + "<br/>posx: " + position[ID]['position_x'] + "<br/>posy: " + position[ID]['position_y'];
+      $('#mouse_click_info').html(s);
     });
 
     // show info next to mouse
@@ -60,6 +60,6 @@ $(document).ready(function() {
 
   socket.on('message_from_server', function(msg) {
     console.log("Got this: " + msg);
-    $("#mouse_click_info").text(msg)
+    $("#mouse_click_info").html(msg)
   });
 });
