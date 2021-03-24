@@ -6,6 +6,7 @@ from database.model.world import *
 from database.model.dbc import TaxiNode, AreaTrigger
 from database.connection import ConnectDatabase
 from sqlalchemy import or_
+from calculations import Azeroth
 
 
 class Realm:
@@ -19,6 +20,9 @@ class Realm:
         lst = list()
 
         for record in records:
+            pos = Azeroth(
+                record.position_x, record.position_y).maps(record.map)
+
             lst.append({
                 # 'name': record.name,
                 'position_x': record.position_x,
@@ -28,6 +32,8 @@ class Realm:
                 # 'level': record.level,
                 'map': record.map,
                 # 'zone': record.zone,
+                'posx': pos['x'],
+                'posy': pos['y']
             })
 
         return lst
@@ -49,10 +55,16 @@ class World:
         lst = list()
 
         for record in records:
+            pos = Azeroth(
+                record.position_x, record.position_y).maps(record.map)
+
             lst.append({
+                'spawn_id': record.spawn_id,
                 'position_x': record.position_x,
                 'position_y': record.position_y,
                 'map': record.map,
+                'posx': pos['x'],
+                'posy': pos['y']
             })
 
         return lst
@@ -67,10 +79,16 @@ class World:
         lst = list()
 
         for record in records:
+            pos = Azeroth(record.x, record.y).maps(record.map)
+
             lst.append({
+                'id': record.entry,
+                'name': record.name,
                 'position_x': record.x,
                 'position_y': record.y,
                 'map': record.map,
+                'posx': pos['x'],
+                'posy': pos['y']
             })
 
         return lst
@@ -86,10 +104,16 @@ class World:
         lst = list()
 
         for record in records:
+            pos = Azeroth(
+                record.spawn_positionX, record.spawn_positionY).maps(
+                    record.spawn_map)
+
             lst.append({
                 'position_x': record.spawn_positionX,
                 'position_y': record.spawn_positionY,
-                'map': record.spawn_map
+                'map': record.spawn_map,
+                'posx': pos['x'],
+                'posy': pos['y']
             })
 
         return lst
@@ -107,11 +131,15 @@ class Dbc:
         lst = list()
 
         for record in records:
+            pos = Azeroth(record.X, record.Y).maps(record.ContinentID)
+
             lst.append({
                 'position_x': record.X,
                 'position_y': record.Y,
                 'map': record.ContinentID,
                 'name': record.Name_enUS,
+                'posx': pos['x'],
+                'posy': pos['y']
             })
 
         return lst
@@ -124,11 +152,15 @@ class Dbc:
         lst = list()
 
         for record in records:
+            pos = Azeroth(record.X, record.Y).maps(record.ContinentID)
+
             lst.append({
                 'position_x': record.X,
                 'position_y': record.Y,
                 'map': record.ContinentID,
                 'name': record.Name_enUS,
+                'posx': pos['x'],
+                'posy': pos['y']
             })
 
         return lst

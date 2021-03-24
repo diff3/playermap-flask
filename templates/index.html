@@ -6,13 +6,14 @@
 <head>
   <title>{{ title }}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel=”icon” type= “image/x-icon” href="/static/img/favicon.ico" />
 
   <!-- https://jquery.com/download/ -->
   <script src="/static/js/jquery-3.6.0.min.js"></script>
 
   <!-- https://github.com/socketio/socket.io/releases -->
   <script src="/static/js/socket.io.min.js"></script>
-  <script src="/static/js/playermap.js"></script>
+
 
   <!-- https://getbootstrap.com/docs/4.6.0/getting-started/download/ -->
   <!-- <link rel="stylesheet" href="/static/css/bootstrap.min.css" /> -->
@@ -21,7 +22,10 @@
 
 <body>
   <div id="world"></div>
-   <button id="btnSubmit" type="button">Click Me!</button> 
+   <button id="submit_to_server" type="button">Click Me!</button>
+   <div id="mouse_click_info"></div>
+   <div id="location_information" style="position: absolute;"></div>
+   <script src="/static/js/playermap.js"></script>
 </body>
 
 </html>

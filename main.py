@@ -28,15 +28,17 @@ def index():
 
 
 def player_position():
-    while not thread_stop_event.isSet():
-        # socketio.emit('newposition', Dbc().get_taxi_nodes(), namespace='/playermap') # noqa
-        # socketio.emit('newposition', Dbc().get_area_triggers(), namespace='/playermap') # noqa
-        # socketio.emit('newposition', World().get_creature_position(), namespace='/playermap') # noqa
-        socketio.emit('newposition', World().get_worldport(), namespace='/playermap') # noqa
-        # socketio.emit('newposition', World().get_gameobjects(), namespace='/playermap') # noqa
-        # socketio.emit('newposition', Realm().get_player_position(), namespace='/playermap') # noqa
+    socketio.emit('newposition', World().get_worldport(), namespace='/playermap') # noqa
 
-        socketio.sleep(60)
+    while not thread_stop_event.isSet():
+        # socketio.emit('newposition', Dbc().get_area_triggers(), namespace='/playermap') # noqa
+        # socketio.emit('newposition', Dbc().get_taxi_nodes(), namespace='/playermap') # noqa
+        # socketio.emit('newposition', World().get_creature_position(), namespace='/playermap') # noqa
+        # socketio.emit('newposition', World().get_gameobjects(), namespace='/playermap') # noqa
+        socketio.emit('newposition', World().get_worldport(), namespace='/playermap') # noqa
+        # socketio.emit('newposition', Realm().get_player_position(), namespace='/playermap')  # noqa
+
+        socketio.sleep(10)
 
 
 @socketio.on('connect', namespace='/playermap')
@@ -56,7 +58,9 @@ def test_disconnect():
 
 @socketio.on('message_from_browser', namespace='/playermap')
 def message_from_browser(message):
-    emit('message_from_server', "Hello from server", broadcast=True)
+    thread_stop_event.set()
+    emit('message_from_server', "Server: disabled threading. Please reload.",
+         broadcast=True)
 
 
 if __name__ == '__main__':

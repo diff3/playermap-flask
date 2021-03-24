@@ -25,3 +25,23 @@ body {
   border: 0px;
   z-index: 100;
 }
+
+.location {
+  position: absolute;
+  z-index: 100;
+  height: 7px;
+  width: 7px;
+  border: 0px;
+  top: 0px;
+  left: 0px;
+}
+
+#location_information {
+  display: hidden;
+  color: yellow;
+  font-size: 15px;
+  background-color: black;
+  width:100px;
+  height: 100px;
+  z-index: 99999;
+}
