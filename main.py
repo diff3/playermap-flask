@@ -28,15 +28,15 @@ def index():
 
 
 def player_position():
-    socketio.emit('newposition', World().get_worldport(), namespace='/playermap')  # noqa
+    # socketio.emit('newposition', World().get_worldport(), namespace='/playermap')  # noqa
 
     while not thread_stop_event.isSet():
         # socketio.emit('newposition', Dbc().get_area_triggers(), namespace='/playermap') # noqa
         # socketio.emit('newposition', Dbc().get_taxi_nodes(), namespace='/playermap') # noqa
         # socketio.emit('newposition', World().get_creature_position(), namespace='/playermap') # noqa
         # socketio.emit('newposition', World().get_gameobjects(), namespace='/playermap') # noqa
-        socketio.emit('newposition', World().get_worldport(), namespace='/playermap')  # noqa
-        # socketio.emit('newposition', Realm().get_player_position(), namespace='/playermap')  # noqa
+        # socketio.emit('newposition', World().get_worldport(), namespace='/playermap')  # noqa
+        socketio.emit('newposition', Realm().get_player_position(), namespace='/playermap')  # noqa
 
         socketio.sleep(10)
 

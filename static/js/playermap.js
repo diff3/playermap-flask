@@ -1,8 +1,8 @@
 // Show info next to cursor
 function divShow(e, id) {
   var div = document.getElementById(id);
-  div.style.left = 50 + e.clientX + "px";;
-  div.style.top = e.clientY + "px";;
+  div.style.left = 10 + e.clientX + "px";;
+  div.style.top = -101 + e.clientY + "px";;
   $("#" + id).show();
 }
 
@@ -26,7 +26,7 @@ $(document).ready(function() {
 
     for (i = 0; i < position.length; i++)
     {
-      location = '<img src="/static/img/map/allia.gif" class="location" id="' + i + '" onmouseover="divShow(event, \'location_information\')" onmouseout="divHide(event,\'location_information\')" \>'
+      location = '<img src="/static/img/map/allia.gif" class="location" id="' + i + '" onmouseover="divShow(event, \'information\')" onmouseout="divHide(event,\'information\')" \>'
 
       $("#world").append(location);
 
@@ -47,9 +47,17 @@ $(document).ready(function() {
     // show info next to mouse
     $('#world').on('mouseover', ".location", function() {
       ID = $(this).attr('id')
-      s = position[ID]['id'] + "\n" + position[ID]['name'] + "\nposx: " + position[ID]['position_x'] + "\nposy: " + position[ID]['position_y'];
-      $("#location_information").text(s)
+
+      $("#name").text(position[ID]['name']);
+      $("#level").text("Level " + position[ID]['level']);
+      $("#guild").text("Glory of Potatos");
+      $("#name").text(position[ID]['name']);
+      $("#faction").html("<img src='/static/img/map/hordeicon.gif' />");
+      $("#race").html("<img src='/static/img/c_icons/8-0.gif' />");
+      $("#class").html("<img src='/static/img/c_icons/8.gif' />");
     });
+
+
   });
   //$("#world").html(location);
 

@@ -36,12 +36,58 @@ body {
   left: 0px;
 }
 
-#location_information {
-  display: hidden;
-  color: yellow;
-  font-size: 15px;
-  background-color: black;
-  width:100px;
-  height: 100px;
+#information {
+  position: absolute;
+  display: none;
+  top: 100px;
+  left: 0px;
+  width: 160px;
+  height: 91px;
+  background: rgba(0, 0, 0, 0.73);
+  border-radius: 5px;
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border: 1px;
+  border-style: solid;
+  border-color: rgba(208, 202, 204, 1) rgba(90, 71, 63, 1) rgba(90, 71, 63, 1) rgba(208, 202, 204, 1);
   z-index: 99999;
+}
+
+#header {
+  color: rgba(0, 153, 26, 1);
+  font-size: 20px;
+  padding-left: 5px;
+  padding-top: 5px;
+}
+
+.row {
+  color: rgba(255, 255, 255, 1);
+  font-size: 15px;
+  padding-left: 5px;
+  padding-top: 0px;
+}
+
+#name {
+  text-shadow: 2px 2px rgba(0, 0, 0, 1);
+}
+
+#guild {
+  text-shadow: 2px 2px rgba(0, 0, 0, 1);
+  ;
+}
+
+#level {
+  text-shadow: 2px 2px rgba(0, 0, 0, 1);
+  ;
+}
+
+#faction {
+  padding-left: 10px;
+}
+
+#race {
+  padding-left: 5px;
+}
+
+#class {
+  padding-left: 5px;
 }

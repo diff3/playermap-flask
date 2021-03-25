@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from database.model.realm import Characters
-from database.model.world import * # noqa
-from database.model.dbc import TaxiNode, AreaTrigger # noqa
+from database.model.world import *  # noqa
+from database.model.dbc import TaxiNode, AreaTrigger  # noqa
 from database.connection import ConnectDatabase
 from sqlalchemy import or_
 from calculations import Azeroth
@@ -24,14 +24,13 @@ class Realm:
                 record.position_x, record.position_y).maps(record.map)
 
             lst.append({
-                # 'name': record.name,
+                'name': record.name,
                 'position_x': record.position_x,
                 'position_y': record.position_y,
-                # 'race': record.race,
+                'race': record.race,
                 # 'class': record.class, # noqa
-                # 'level': record.level,
+                'level': record.level,
                 'map': record.map,
-                # 'zone': record.zone,
                 'posx': pos['x'],
                 'posy': pos['y']
             })
@@ -44,10 +43,14 @@ class World:
         World.session = ConnectDatabase("alpha_world").connect()
 
     def get_creature_position(self):
-        records = World.session.query(SpawnsCreatures).filter(or_(
-            SpawnsCreatures.map == '0',
-            SpawnsCreatures.map == '1',
-            SpawnsCreatures.ignored == 0)).limit(57000).all()
+        records = World.session.query(SpawnsCreatures, CreatureTemplate) \
+            .join(SpawnsCreatures) \
+            .join(CreatureTemplate) \
+            .filter(SpawnsCreatures.spawn_entry1 == CreatureTemplate.entry) \
+            .filter(or_(
+                SpawnsCreatures.map == '0',
+                SpawnsCreatures.map == '1')) \
+            .filter(SpawnsCreatures.ignored == 0).limit(100).all()
         # .limit(1000)
 
         World.session.commit()
@@ -55,11 +58,17 @@ class World:
         lst = list()
 
         for record in records:
+            print(record)
             pos = Azeroth(
                 record.position_x, record.position_y).maps(record.map)
 
+            # todo get spawn namn from DBC database
+            # dbc.CreatureDisplayInfo.ID == world.creature_template.display_id1
+            # world.spawns_creature.spawn_entry1 == world.creature_template.entry
+
             lst.append({
-                'spawn_id': record.spawn_id,
+                'id': record.spawn_id,
+                'name': record.name,
                 'position_x': record.position_x,
                 'position_y': record.position_y,
                 'map': record.map,
@@ -108,7 +117,9 @@ class World:
                 record.spawn_positionX, record.spawn_positionY).maps(
                     record.spawn_map)
 
+            # todo get spawn name from DBC
             lst.append({
+                'id': record.spawn_id,
                 'position_x': record.spawn_positionX,
                 'position_y': record.spawn_positionY,
                 'map': record.spawn_map,
@@ -134,6 +145,7 @@ class Dbc:
             pos = Azeroth(record.X, record.Y).maps(record.ContinentID)
 
             lst.append({
+                'id': record.ID,
                 'position_x': record.X,
                 'position_y': record.Y,
                 'map': record.ContinentID,
@@ -155,6 +167,7 @@ class Dbc:
             pos = Azeroth(record.X, record.Y).maps(record.ContinentID)
 
             lst.append({
+                'name': "",
                 'position_x': record.X,
                 'position_y': record.Y,
                 'map': record.ContinentID,
