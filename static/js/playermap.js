@@ -9,7 +9,7 @@ function divShow(e, id) {
 // hide it
 function divHide(e, id) {
   var div = document.getElementById(id);
-  $("#" + id).hide();
+   $("#" + id).hide();
 }
 
 $(document).ready(function() {
@@ -26,7 +26,13 @@ $(document).ready(function() {
 
     for (i = 0; i < position.length; i++)
     {
-      location = '<img src="/static/img/map/allia.gif" class="location" id="' + i + '" onmouseover="divShow(event, \'information\')" onmouseout="divHide(event,\'information\')" \>'
+      if (position[i]['show'] == 'player_information') {
+        location = '<img src="/static/img/map/' + position[i]["faction"] + '.gif" class="player_location" id="' + i + '" onmouseover="divShow(event, \''+position[i]['show']+'\')" onmouseout="divHide(event,\''+position[i]['show']+'\')" \>'
+      }
+      else {
+        location = '<img src="/static/img/map/group-icon.gif" class="location" id="' + i + '" onmouseover="divShow(event, \''+position[i]['show']+'\')" onmouseout="divHide(event,\''+position[i]['show']+'\')" \>'
+      }
+
 
       $("#world").append(location);
 
@@ -38,26 +44,38 @@ $(document).ready(function() {
     }
 
     // show info on mouse click
-    $('#world').on('click', ".location", function() {
+    $('#world').on('click', ".player_location", function() {
       ID = $(this).attr('id')
       s = "ID: " + position[ID]['id'] + "<br/>Name:" + position[ID]['name'] + "<br/>posx: " + position[ID]['position_x'] + "<br/>posy: " + position[ID]['position_y'];
       $('#mouse_click_info').html(s);
     });
 
-    // show info next to mouse
-    $('#world').on('mouseover', ".location", function() {
+    // show info next to mouse, player
+    $('#world').on('mouseover', ".player_location", function() {
       ID = $(this).attr('id')
 
       $("#name").text(position[ID]['name']);
       $("#level").text("Level " + position[ID]['level']);
       $("#guild").text("Glory of Potatos");
       $("#name").text(position[ID]['name']);
-      $("#faction").html("<img src='/static/img/map/hordeicon.gif' />");
-      $("#race").html("<img src='/static/img/c_icons/8-0.gif' />");
-      $("#class").html("<img src='/static/img/c_icons/8.gif' />");
+      $("#faction").html("<img src='/static/img/map/"+position[ID]['faction']+"icon.gif' />");
+      $("#race").html("<img src='/static/img/c_icons/"+position[ID]['race']+"-"+position[ID]['gender']+".gif' />");
+      $("#class").html("<img src='/static/img/c_icons/"+position[ID]['class']+".gif' />");
+      $("#zone").text(position[ID]['zone']);
     });
 
+    // show info next to mouse, creatures
+    $('#world').on('mouseover', ".location", function() {
+      ID = $(this).attr('id')
 
+      $("#cname").text(position[ID]['name']);
+      $("#spawnid").text("spawn id: " + position[ID]['id']);
+      $("#cposx").text("posx: " + position[ID]['position_x']);
+      $("#cposy").text("posx: " + position[ID]['position_y']);
+      $("#cposz").text("posz: " + position[ID]['position_z']);
+      $("#orientation").text("o: " + position[ID]['orientation']);
+      $("#cimage").html("<img id='cimg' src='/static/img/alpha/creature-display-" + position[ID]['display_id'] + ".jpg' />")
+    });
   });
   //$("#world").html(location);
 
