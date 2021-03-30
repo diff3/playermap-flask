@@ -19,8 +19,6 @@ __author__ = 'entropy'
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
-app.config['PORT'] = 5000
-app.config['HOST'] = "0.0.0.0"
 
 
 socketio = SocketIO(app, async_mode=None, logger=True, engineio_logger=True)
@@ -90,4 +88,4 @@ def get_taxi_nodes(message):
 
 
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, host="localhost", port="5000")
