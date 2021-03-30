@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+Not used at the moment
+"""
+
 from database.model.realm import Characters
 from database.model.world import *  # noqa
 from database.model.dbc import TaxiNode, AreaTrigger, AreaTable # noqa
@@ -52,16 +56,17 @@ class Realm:
 
 
 class World:
-    def __init__(self):
-        World.session = ConnectDatabase("alpha_world").connect()
+    def __init__(self, session):
+        # World.session = ConnectDatabase("alpha_world").connect()
+        World.session = session
 
     def get_creature_position(self):
         records = World.session.query(SpawnsCreatures) \
             .filter(or_(
                 SpawnsCreatures.map == '0',
                 SpawnsCreatures.map == '1',
-                SpawnsCreatures.ignored == 0)) \
-            .limit(1000).all()
+                SpawnsCreatures.ignored == 0)).all()
+            # .limit(1000).all()
 
         World.session.commit()
 
@@ -118,10 +123,11 @@ class World:
         return lst
 
     def get_gameobjects(self):
-        records = World.session.query(SpawnsGameobjects).filter(or_(
+        """ records = World.session.query(SpawnsGameobjects).filter(or_(
             SpawnsGameobjects.spawn_map == '0',
-            SpawnsGameobjects.spawn_map == '1',
-            SpawnsGameobjects.ignored == 0)).all()
+            SpawnsGameobjects.spawn_map == '1')).all() """
+
+        records = World.session.query(SpawnsGameobjects).all()
 
         World.session.commit()
 
@@ -153,7 +159,7 @@ class World:
 
         name = str()
         display_id1 = int()
-        
+
         for record in records:
             name = record.name
             display_id1 = record.display_id1
@@ -177,28 +183,6 @@ class Dbc:
 
             lst.append({
                 'id': record.ID,
-                'position_x': record.X,
-                'position_y': record.Y,
-                'map': record.ContinentID,
-                'name': record.Name_enUS,
-                'posx': pos['x'],
-                'posy': pos['y']
-            })
-
-        return lst
-
-    def get_area_triggers(self):
-        records = Dbc.session.query(TaxiNode).all()
-
-        Dbc.session.commit()
-
-        lst = list()
-
-        for record in records:
-            pos = Azeroth(record.X, record.Y).maps(record.ContinentID)
-
-            lst.append({
-                'name': "",
                 'position_x': record.X,
                 'position_y': record.Y,
                 'map': record.ContinentID,

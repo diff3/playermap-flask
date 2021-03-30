@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+Not used at the moment
+"""
+
 import configparser
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
