@@ -19,6 +19,9 @@ __author__ = 'entropy'
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 app.config['DEBUG'] = True
+app.config['PORT'] = 5000
+app.config['HOST'] = "0.0.0.0"
+
 
 socketio = SocketIO(app, async_mode=None, logger=True, engineio_logger=True)
 
