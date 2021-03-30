@@ -43,11 +43,6 @@ $(document).ready(function() {
         $("#spawnid").text("id: " + position[ID]['id']);
         $("#cposx").text("posx: " + position[ID]['position_x']);
         $("#cposy").text("posy: " + position[ID]['position_y']);
-
-        $('#information').css({
-          'height': '100px',
-          'width': 'auto'
-        });
       });
     }
   });
@@ -77,12 +72,7 @@ $(document).ready(function() {
         $("#cposy").text("posy: " + position[ID]['position_y']);
         $("#cposz").text("posz: " + position[ID]['position_z']);
         $("#orientation").text("o: " + position[ID]['orientation']);
-        // $("#cimage").html("<img id='cimg' src='/static/img/alpha/creature-display-" + position[ID]['display_id'] + ".jpg' />")
-
-        $('#information').css({
-          'height': '100px',
-          'width': 'auto'
-        });
+        $("#cimage").html("<img id='cimg' src='/static/img/alpha/creature-display-" + position[ID]['display_id'] + ".jpg' />")
       });
     }
   });
@@ -93,7 +83,7 @@ $(document).ready(function() {
 
     $("#world").html("");
     for (i = 0; i < position.length; i++) {
-      locations = '<img src="/static/img/map/group-icon.gif" class="new_creature_position" id="' + i + '" onmouseover="divShow(event, \'' + position[i]['show'] + '\')" onmouseout="divHide(event,\'' + position[i]['show'] + '\')" \>';
+      locations = '<img src="/static/img/map/group-icon.gif" class="new_taxi_location" id="' + i + '" onmouseover="divShow(event, \'' + position[i]['show'] + '\')" onmouseout="divHide(event,\'' + position[i]['show'] + '\')" \>';
 
       $("#world").append(locations);
 
@@ -103,18 +93,13 @@ $(document).ready(function() {
         'top': position[i]['posy']
       });
 
-      $('#world').on('mouseover', ".new_creature_position", function() {
+      $('#world').on('mouseover', ".new_taxi_location", function() {
         ID = $(this).attr('id');
 
         $("#cname").text(position[ID]['name']);
         $("#spawnid").text("id: " + position[ID]['id']);
         $("#cposx").text("posx: " + position[ID]['position_x']);
         $("#cposy").text("posy: " + position[ID]['position_y']);
-
-        $('#information').css({
-          'height': '100px',
-          'width': 'auto'
-        });
       });
     }
   });
@@ -143,11 +128,6 @@ $(document).ready(function() {
         $("#cposy").text("posy: " + position[ID]['position_y']);
         $("#cposz").text("posz: " + position[ID]['position_z']);
         $("#orientation").text("orientation: " + position[ID]['position_o']);
-
-        $('#information').css({
-          'height': '100px',
-          'width': 'auto'
-        });
       });
     }
   });
