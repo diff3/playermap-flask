@@ -4,3 +4,4 @@ config.conf
 *.pyc
 __pycache__
 test.py
+todo
