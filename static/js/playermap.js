@@ -1,8 +1,33 @@
 // Show info next to cursor
+
+// it's marks on page width, no mather where on page it is
+
 function divShow(e, id) {
   var div = document.getElementById(id);
-  div.style.left = 10 + e.clientX + "px";;
-  div.style.top = -101 + e.clientY + "px";;
+
+  var height = e.pageY;
+  var width = e.pageX + $(div).width();
+
+  var offsetY = 0;
+  var offsetX = 0;
+
+  if (0 > height) {
+    // this couse the div to dissapear
+    //offsetY = Number($(div).height() + 10);
+  }
+
+  if ($(window).width() < width) {
+    offsetX = Number($(div).width()) - 10;
+    console.log("e.pageX: " + e.pageX);
+    console.log("e.pageY: " + e.pageY);
+    console.log("Div width: " + $(div).width());
+    console.log("Div Height: " + $(div).height());
+    // alert("offpage")
+  }
+
+  div.style.left = e.pageX - offsetX + "px";
+  div.style.top = height + offsetY + "px";
+
   $("#" + id).show();
 }
 
@@ -127,7 +152,7 @@ $(document).ready(function() {
         $("#cposx").text("posx: " + position[ID]['position_x']);
         $("#cposy").text("posy: " + position[ID]['position_y']);
         $("#cposz").text("posz: " + position[ID]['position_z']);
-        $("#orientation").text("orientation: " + position[ID]['position_o']);
+        // $("#orientation").text("orientation: " + position[ID]['position_o']);
       });
     }
   });
@@ -182,29 +207,49 @@ $(document).ready(function() {
     socket.emit('get_worldport', 'update');
     console.log("Sending: worldport update");
     $("#world").html("");
+    $("orientation").html("");
+    $("cimage").html("");
+    $("#cposz").text("");
+    position = null;
   });
 
   $('#get_creature_position').on('click', function() {
     socket.emit('get_creature_position', 'update');
     console.log("Sending: creatures update");
     $("#world").html("");
+    $("orientation").html("");
+    $("cimage").html("");
+    $("#cposz").text("");
+    position = null;
   });
 
   $('#get_player_position').on('click', function() {
     socket.emit('get_player_position', 'update');
     console.log("Sending: player updates");
     $("#world").html("");
+    $("orientation").html("");
+    $("cimage").html("");
+    $("#cposz").text("");
+    position = null;
   });
 
   $('#get_gameobjects').on('click', function() {
     socket.emit('get_gameobjects', 'update');
     console.log("Sending: game objects update");
     $("#world").html("");
+    $("orientation").html("");
+    $("#cposz").text("");
+    $("cimage").html("");
+    position = null;
   });
 
   $('#get_taxi_nodes').on('click', function() {
     socket.emit('get_taxi_nodes', 'update');
     console.log("Sending: taxiNode update");
     $("#world").html("");
+    $("#cposz").text("");
+    $("orientation").html("");
+    $("cimage").html("");
+    position = null;
   });
 });
