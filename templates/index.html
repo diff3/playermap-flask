@@ -6,7 +6,7 @@
 <head>
   <title>{{ title }}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link rel=”icon” type= “image/x-icon” href="/static/img/favicon.ico" />
+  <link rel=”icon” type= “image/x-icon” href="favicon.ico" />
 
   <!-- https://jquery.com/download/ -->
   <script src="/static/js/jquery-3.6.0.min.js"></script>
@@ -14,13 +14,17 @@
   <!-- https://github.com/socketio/socket.io/releases -->
   <script src="/static/js/socket.io.min.js"></script>
 
+  <script src="/static/js/playermap.js"></script>
 
+  <!-- https://html5boilerplate.com -->
   <link rel="stylesheet" href="/static/css/normal.css" />
   <link rel="stylesheet" href="/static/css/style.css" />
 </head>
 
 <body>
   <div id="world"></div>
+
+  {% if admin == "True" %}
    <button id="get_worldport" type="button">Worldport</button><br/>
    <button id="get_creature_position" type="button">Creatures</button><br/>
    <button id="get_gameobjects" type="button">Game objects</button><br/>
@@ -28,6 +32,7 @@
    <button id="get_taxi_nodes" type="button">Taxi nodes</button><br/>
 
    <div id="mouse_click_info"></div>
+   {% endif %}
 
    <div id="player_information">
      <div id="header"><span id="name"></span></div>
@@ -46,7 +51,6 @@
      <div id="cimage"></div>
    </div>
 
-   <script src="/static/js/playermap.js"></script>
 </body>
 
 </html>
