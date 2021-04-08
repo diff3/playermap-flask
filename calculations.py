@@ -6,7 +6,7 @@ Transform wow cords to web cords
 """
 
 
-class Azeroth:
+class Azeroth_053:
     def __init__(self, x, y):
         self.pos = {
             'x': 0,
