@@ -2,22 +2,20 @@
 # -*- coding: utf-8 -*-
 
 import configparser
-from database.mysqld import World, Realm, Dbc
+from database.queryHandler import World, Realm, Dbc
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit  # noqa
 from time import sleep  # noqa
 from threading import Thread, Event
 
-# from database.queryHandler import Realm, World, Dbc
-# from database.connection import ConnectDatabase
 
+__author__ = 'entropy'
 
 config = configparser.ConfigParser()
 config.read('config.conf')
+
 opac = dict(config.items('OPAC'))
 webapp = dict(config.items('WEBAPP'))
-
-__author__ = 'entropy'
 
 
 app = Flask(__name__)
