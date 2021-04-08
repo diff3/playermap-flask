@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from calculations import Azeroth_053
+from utils.calculations import Azeroth_053
 from database.mysqld import Mysqld
 
 allience = [1, 3, 4, 7]
