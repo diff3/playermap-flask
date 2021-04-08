@@ -1,50 +1,74 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-Not used at the moment
-"""
-
-from database.model.realm import Characters
-from database.model.world import *  # noqa
-from database.model.dbc import TaxiNode, AreaTrigger, AreaTable # noqa
-from database.connection import ConnectDatabase
-from sqlalchemy import or_
-from calculations import Azeroth
+from calculations import Azeroth_053
+from database.mysqld import Mysqld
 
 allience = [1, 3, 4, 7]
 
 
-class Realm:
+class Dbc:
     def __init__(self):
-        Realm.session = ConnectDatabase("alpha_realm").connect()
+        pass
 
-    def get_player_position(self):
-        records = Realm.session.query(Characters).all()
-        Realm.session.commit()
+    def get_taxi_nodes(self, database):
+        results = Mysqld(database).query(
+            """SELECT * FROM TaxiNodes
+            WHERE ContinentID = '0' OR ContinentID = '1'""")
 
         lst = list()
 
-        for record in records:
-            pos = Azeroth(
-                record.position_x, record.position_y).maps(record.map)
+        for record in results:
+            pos = Azeroth_053(record[2], record[3]).maps(record[1])
 
-            if record.race in allience:
+            lst.append({
+                'id': record[0],
+                'position_x': record[2],
+                'position_y': record[3],
+                'map': record[1],
+                'name': record[5],
+                'posx': pos['x'],
+                'posy': pos['y'],
+                'show': "information"
+
+            })
+
+        return lst
+
+
+class Realm:
+    def __init__(self):
+        pass
+
+    def get_player_position(self, database):
+        results = Mysqld(database).query(
+            """SELECT * FROM characters
+            WHERE map = '0' AND online='1'
+            OR map = '1' AND online = '1'""")
+
+        lst = list()
+
+        for record in results:
+            zone = Mysqld("alpha_world").query(
+                """SELECT name FROM area_template
+                WHERE entry = '" + str(record[27]) + "'""")
+
+            pos = Azeroth_053(record[17], record[18]).maps(record[20])
+
+            if record[3] in allience:
                 faction = "alliance"
             else:
                 faction = "horde"
 
-            zone = Dbc().get_zone_name(record.zone)
-
             lst.append({
-                'name': record.name,
-                'position_x': record.position_x,
-                'position_y': record.position_y,
-                'race': record.race,
-                'class': record.class_,
-                'level': record.level,
-                'gender': record.gender,
-                'map': record.map,
+                'name': record[2],
+                'position_x': record[17],
+                'position_y': record[18],
+                'race': record[3],
+                'class': record[4],
+                'level': record[6],
+                'gender': record[5],
+                'map': record[20],
                 'posx': pos['x'],
                 'posy': pos['y'],
                 'faction': faction,
@@ -56,41 +80,27 @@ class Realm:
 
 
 class World:
-    def __init__(self, session):
-        # World.session = ConnectDatabase("alpha_world").connect()
-        World.session = session
+    def __init__(self):
+        pass
 
-    def get_creature_position(self):
-        records = World.session.query(SpawnsCreatures) \
-            .filter(or_(
-                SpawnsCreatures.map == '0',
-                SpawnsCreatures.map == '1',
-                SpawnsCreatures.ignored == 0)).all()
-            # .limit(1000).all()
-
-        World.session.commit()
+    def get_creature_position(self, database):
+        results = Mysqld(database).query(
+            """SELECT * FROM spawns_creatures
+            WHERE map = '0' AND ignored= '0'
+            OR map = '1' AND ignored = '0'""")
 
         lst = list()
 
-        for record in records:
-            pos = Azeroth(
-                record.position_x, record.position_y).maps(record.map)
-
-            name, display_id1 = self.get_creature_name(record.spawn_entry1)
-
-            # todo get spawn namn from DBC database
-            # dbc.CreatureDisplayInfo.ID == world.creature_template.display_id1
-            # world.spawns_creature.spawn_entry1 == world.creature_template.entry
+        for record in results:
+            pos = Azeroth_053(record[8], record[9]).maps(record[5])
 
             lst.append({
-                'id': record.spawn_id,
-                'display_id': display_id1,
-                'name': name,
-                'position_x': record.position_x,
-                'position_y': record.position_y,
-                'position_z': record.position_z,
-                'orientation': record.orientation,
-                'map': record.map,
+                'id': record[0],
+                'position_x': record[8],
+                'position_y': record[9],
+                'position_z': record[10],
+                'orientation': record[11],
+                'map': record[5],
                 'posx': pos['x'],
                 'posy': pos['y'],
                 'show': "information"
@@ -98,112 +108,54 @@ class World:
 
         return lst
 
-    def get_worldport(self):
-        records = World.session.query(Worldports).filter(or_(
-            Worldports.map == '0',
-            Worldports.map == '1')).all()
-
-        World.session.commit()
+    def get_worldport(self, database):
+        results = Mysqld(database).query(
+            """SELECT * FROM worldports
+            WHERE map = '0' OR map = '1'""")
 
         lst = list()
 
-        for record in records:
-            pos = Azeroth(record.x, record.y).maps(record.map)
+        for record in results:
+            pos = Azeroth_053(record[1], record[2]).maps(record[5])
 
             lst.append({
-                'id': record.entry,
-                'name': record.name,
-                'position_x': record.x,
-                'position_y': record.y,
-                'map': record.map,
+                'id': record[0],
+                'name': record[6],
+                'position_x': record[1],
+                'position_y': record[2],
+                'map': record[5],
                 'posx': pos['x'],
-                'posy': pos['y']
+                'posy': pos['y'],
+                'show': "information"
             })
 
         return lst
 
-    def get_gameobjects(self):
-        """ records = World.session.query(SpawnsGameobjects).filter(or_(
-            SpawnsGameobjects.spawn_map == '0',
-            SpawnsGameobjects.spawn_map == '1')).all() """
-
-        records = World.session.query(SpawnsGameobjects).all()
-
-        World.session.commit()
-
-        lst = list()
-
-        for record in records:
-            pos = Azeroth(
-                record.spawn_positionX, record.spawn_positionY).maps(
-                    record.spawn_map)
-
-            # todo get spawn name from DBC
-            lst.append({
-                'id': record.spawn_id,
-                'position_x': record.spawn_positionX,
-                'position_y': record.spawn_positionY,
-                'map': record.spawn_map,
-                'posx': pos['x'],
-                'posy': pos['y']
-            })
-
-        return lst
-
-    def get_creature_name(self, id):
-        records = World.session.query(CreatureTemplate) \
-            .filter(CreatureTemplate.entry == id) \
-            .all()
-
-        World.session.commit()
-
-        name = str()
-        display_id1 = int()
-
-        for record in records:
-            name = record.name
-            display_id1 = record.display_id1
-
-        return name, display_id1
-
-
-class Dbc:
-    def __init__(self):
-        Dbc.session = ConnectDatabase("alpha_dbc").connect()
-
-    def get_taxi_nodes(self):
-        records = Dbc.session.query(TaxiNode).all()
-
-        Dbc.session.commit()
+    def get_gameobjects(self, database):
+        results = Mysqld(database).query(
+            """SELECT sg.spawn_entry, gt.name, sg.spawn_map, sg.spawn_positionX,
+            sg.spawn_positionY, sg.spawn_positionZ, sg.spawn_orientation
+            FROM spawns_gameobjects sg
+            JOIN gameobject_template gt ON gt.entry = sg.spawn_id
+            WHERE sg.spawn_map = '0' AND sg.ignored='0'
+            OR sg.spawn_map = '1' AND sg.ignored='0'""")
 
         lst = list()
 
-        for record in records:
-            pos = Azeroth(record.X, record.Y).maps(record.ContinentID)
+        for record in results:
+            pos = Azeroth_053(record[3], record[4]).maps(record[2])
 
             lst.append({
-                'id': record.ID,
-                'position_x': record.X,
-                'position_y': record.Y,
-                'map': record.ContinentID,
-                'name': record.Name_enUS,
+                'id': record[0],
+                'name': record[1],
+                'map': record[2],
+                'position_x': record[3],
+                'position_y': record[4],
+                'position_z': record[5],
+                'spawn_orientation': record[6],
                 'posx': pos['x'],
-                'posy': pos['y']
+                'posy': pos['y'],
+                'show': "information"
             })
 
         return lst
-
-    def get_zone_name(self, id):
-        records = Dbc.session.query(AreaTable) \
-            .filter(AreaTable.ID == id) \
-            .all()
-
-        Dbc.session.commit()
-
-        zone = str()
-
-        for record in records:
-            print(record.AreaName_enUS)
-            zone = record.AreaName_enUS
-
-        return zone
