@@ -47,6 +47,20 @@ body {
   min-height: 75px;
 }
 
+#menu {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 110px;
+  height: auto;
+  z-index: 100000;
+  padding: 10px;
+}
+
+button {
+  width: 110px;
+}
+
 .center {
   margin: 0 auto;
 }
@@ -69,10 +83,9 @@ body {
   z-index: 100;
 }
 
-#title {
+.title {
   color: rgba(0, 153, 26, 1);
   font-size: 20px;
-  padding-left: 5px;
   padding-top: 5px;
   padding-right: 5px;
 }

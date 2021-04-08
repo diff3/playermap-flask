@@ -27,24 +27,25 @@
 
 
   {% if admin == "True" %}
-   <button id="get_worldport" type="button">Worldport</button><br/>
+  <div id="menu" class="wow-popup">
+    <div class="title">Menu</title></div>
    <button id="get_creature_position" type="button">Creatures</button><br/>
    <button id="get_gameobjects" type="button">Game objects</button><br/>
    <button id="get_player_position" type="button">Players</button><br/>
    <button id="get_taxi_nodes" type="button">Taxi nodes</button><br/>
-
-   <div id="mouse_click_info"></div>
+   <button id="get_worldport" type="button">Worldport</button><br/>
+ </div>
    {% endif %}
 
    <div id="player_information" class="wow-popup">
-     <div id="title"><span id="name" class="shadow"></span></div>
+     <div class="row"><span class="title"><span id="name" class="shadow"></span></span></div>
      <div class="row"><span id="guild" class="shadow"></span></div>
      <div class="row"><span id="level" class="shadow"></span><span id="faction"><img src="" /></span><span id="race"><img src="" /></span><span id="class"><img src="" /></span></div>
      <div class="row"><span id="zone"></span></div>
    </div>
 
    <div id="information" class="wow-popup">
-     <div id="title"><span id="cname" class="shadow"></span></div>
+     <div class="row"><span class="title"><span id="cname" class="shadow"></span></<span></div>
      <div class="row"><span id="spawnid" class="shadow"></span></div>
      <div class="row"><span id="cposx" class="shadow"></span></div>
      <div class="row"><span id="cposy" class="shadow"></span></div>
