@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import configparser
 from mysql.connector import connect, Error  # noqa
 
 
+__author__ = 'entropy'
+
+config = configparser.ConfigParser()
+config.read('config.conf')
+
+db = dict(config.items('DATABASE'))
+
+
 class Mysqld:
-    def __init__(self, database):
+    def __init__(self, database=db['database']):
         self.conn = connect(
-            host="localhost",
-            user="alpha-core",
-            password="password",
+            host=db['host'],
+            user=db['user'],
+            password=db['pass'],
             database=database
         )
         self.cursor = self.conn.cursor(buffered=True)
