@@ -173,14 +173,6 @@ $(document).ready(function() {
 
     }
 
-
-    // show info on mouse click
-    $('#world').on('click', ".player_location", function() {
-      ID = $(this).attr('id')
-      s = "ID: " + position[ID]['id'] + "<br/>Name:" + position[ID]['name'] + "<br/>posx: " + position[ID]['position_x'] + "<br/>posy: " + position[ID]['position_y'];
-      $('#mouse_click_info').html(s);
-    });
-
     // show info next to mouse, player
     $('#world').on('mouseover', ".player_location", function() {
       ID = $(this).attr('id');
