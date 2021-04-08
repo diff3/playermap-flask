@@ -27,6 +27,9 @@ socketio = SocketIO(app, async_mode=None, logger=True, engineio_logger=True)
 thread = Thread()
 thread_stop_event = Event()
 
+thread_player_online = Thread()
+thread_player_online_stop_event = Event()
+
 
 @app.route('/')
 def index():
@@ -44,16 +47,34 @@ def player_position():
         socketio.sleep(int(webapp['timer']))
 
 
+def player_online():
+    while not thread_player_online_stop_event.isSet():
+        socketio.emit('player_online',
+                      Realm().get_player_online("alpha_realm"),
+                      namespace=webapp['namespace'])
+
+        socketio.sleep(int(webapp['timer']))
+
+
 @socketio.on('connect', namespace=webapp['namespace'])
 def playermap_connect():
     socketio.emit('newposition',
                   Realm().get_player_position("alpha_realm"),
                   namespace=webapp['namespace'])
-    global thread
+
+    socketio.emit('player_online',
+                  Realm().get_player_online("alpha_realm"),
+                  namespace=webapp['namespace'])
+
+    global thread, thread_player_online
 
     if not thread.is_alive():
         print("Starting Thread")
         thread = socketio.start_background_task(player_position)
+
+    if not thread_player_online.is_alive():
+        print("Starting Thread")
+        thread_player_online = socketio.start_background_task(player_online)
 
 
 @socketio.on('disconnect', namespace=webapp['namespace'])
@@ -66,11 +87,22 @@ def get_player_position(message):
     socketio.emit('newposition',
                   Realm().get_player_position("alpha_realm"),
                   namespace=webapp['namespace'])
-    global thread
+
+    socketio.emit('player_online',
+                  Realm().get_player_online("alpha_realm"),
+                  namespace=webapp['namespace'])
+
+    global thread, thread_player_online
+
+    thread_player_online_stop_event.set()
 
     if not thread.is_alive():
         print("Starting Thread")
         thread = socketio.start_background_task(player_position)
+
+    if not thread_player_online.is_alive():
+        print("Starting Thread")
+        thread_player_online = socketio.start_background_task(player_online)
 
 
 @socketio.on('get_worldport', namespace=webapp['namespace'])

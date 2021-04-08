@@ -151,11 +151,18 @@ $(document).ready(function() {
     }
   });
 
+  socket.on('player_online', function(online) {
+    $("#player_online").text(online + " online")
+  });
+
+
+
   //receive details from server
   socket.on('newposition', function(position) {
     var locations;
     var i;
     $("#world").html("");
+    
     for (i = 0; i < position.length; i++) {
       if (position[i]['show'] == 'player_information') {
         locations = '<img src="/static/img/map/' + position[i]["faction"] + '.gif" class="player_location" id="' + i + '" onmouseover="divShow(event, \'' + position[i]['show'] + '\')" onmouseout="divHide(event,\'' + position[i]['show'] + '\')" \>'

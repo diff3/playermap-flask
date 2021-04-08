@@ -78,6 +78,16 @@ class Realm:
 
         return lst
 
+    def get_player_online(self, database):
+        results = Mysqld(database).query(
+            """SELECT count(guid) FROM characters
+            WHERE map = '0' AND online='1'
+            OR map = '1' AND online = '1'""")
+
+        print("HÄR %s" % results[0][0])
+
+        return results[0][0]
+
 
 class World:
     def __init__(self):
