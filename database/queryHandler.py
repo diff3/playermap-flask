@@ -51,7 +51,7 @@ class Realm:
         for record in results:
             zone = Mysqld("alpha_world").query(
                 """SELECT name FROM area_template
-                WHERE entry = '" + str(record[27]) + "'""")
+                WHERE entry = '{}' """.format(record[27]))
 
             pos = Azeroth_053(record[17], record[18]).maps(record[20])
 
@@ -83,8 +83,6 @@ class Realm:
             """SELECT count(guid) FROM characters
             WHERE map = '0' AND online='1'
             OR map = '1' AND online = '1'""")
-
-        print("HÄR %s" % results[0][0])
 
         return results[0][0]
 

@@ -162,7 +162,7 @@ $(document).ready(function() {
     var locations;
     var i;
     $("#world").html("");
-    
+
     for (i = 0; i < position.length; i++) {
       if (position[i]['show'] == 'player_information') {
         locations = '<img src="/static/img/map/' + position[i]["faction"] + '.gif" class="player_location" id="' + i + '" onmouseover="divShow(event, \'' + position[i]['show'] + '\')" onmouseout="divHide(event,\'' + position[i]['show'] + '\')" \>'
@@ -186,12 +186,12 @@ $(document).ready(function() {
 
       $("#name").text(position[ID]['name']);
       $("#level").text("Level " + position[ID]['level']);
-      $("#guild").text("Glory of Potatos");
+      $("#guild").text("");
       $("#name").text(position[ID]['name']);
       $("#faction").html("<img class='left_padding' src='/static/img/map/" + position[ID]['faction'] + "icon.gif' />");
       $("#race").html("<img class='left_padding' src='/static/img/c_icons/" + position[ID]['race'] + "-" + position[ID]['gender'] + ".gif' />");
       $("#class").html("<img class='left_padding' src='/static/img/c_icons/" + position[ID]['class'] + ".gif' />");
-      $("#zone").text(position[ID]['zone']);
+      $("#zone").html(position[ID]['zone']);
     });
   });
 
