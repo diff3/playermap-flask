@@ -5,24 +5,18 @@
 function divShow(e, id) {
   var div = document.getElementById(id);
 
-  var height = e.pageY;
-  var width = e.pageX + $(div).width();
+  var height = e.pageY - $(div).height() - 10;
+  var width = e.pageX + $(div).width() + 10;
 
   var offsetY = 0;
   var offsetX = 0;
 
   if (0 > height) {
-    // this couse the div to dissapear
-    //offsetY = Number($(div).height() + 10);
+    offsetY = Number($(div).height() + 30);
   }
 
   if ($(window).width() < width) {
-    offsetX = Number($(div).width()) - 10;
-    console.log("e.pageX: " + e.pageX);
-    console.log("e.pageY: " + e.pageY);
-    console.log("Div width: " + $(div).width());
-    console.log("Div Height: " + $(div).height());
-    // alert("offpage")
+    offsetX = Number($(div).width() + 10);
   }
 
   div.style.left = e.pageX - offsetX + "px";
@@ -163,7 +157,6 @@ $(document).ready(function() {
     var i;
     $("#world").html("");
     for (i = 0; i < position.length; i++) {
-      console.log("update" + position[i])
       if (position[i]['show'] == 'player_information') {
         locations = '<img src="/static/img/map/' + position[i]["faction"] + '.gif" class="player_location" id="' + i + '" onmouseover="divShow(event, \'' + position[i]['show'] + '\')" onmouseout="divHide(event,\'' + position[i]['show'] + '\')" \>'
       } else {
@@ -196,9 +189,9 @@ $(document).ready(function() {
       $("#level").text("Level " + position[ID]['level']);
       $("#guild").text("Glory of Potatos");
       $("#name").text(position[ID]['name']);
-      $("#faction").html("<img src='/static/img/map/" + position[ID]['faction'] + "icon.gif' />");
-      $("#race").html("<img src='/static/img/c_icons/" + position[ID]['race'] + "-" + position[ID]['gender'] + ".gif' />");
-      $("#class").html("<img src='/static/img/c_icons/" + position[ID]['class'] + ".gif' />");
+      $("#faction").html("<img class='left_padding' src='/static/img/map/" + position[ID]['faction'] + "icon.gif' />");
+      $("#race").html("<img class='left_padding' src='/static/img/c_icons/" + position[ID]['race'] + "-" + position[ID]['gender'] + ".gif' />");
+      $("#class").html("<img class='left_padding' src='/static/img/c_icons/" + position[ID]['class'] + ".gif' />");
       $("#zone").text(position[ID]['zone']);
     });
   });

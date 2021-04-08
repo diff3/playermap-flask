@@ -22,7 +22,9 @@
 </head>
 
 <body>
-  <div id="world"></div>
+  <div id="world" class="center"></div>
+  <div id="playeronline" class="wow-popup center">0 online</div>
+
 
   {% if admin == "True" %}
    <button id="get_worldport" type="button">Worldport</button><br/>
@@ -34,20 +36,20 @@
    <div id="mouse_click_info"></div>
    {% endif %}
 
-   <div id="player_information">
-     <div id="header"><span id="name"></span></div>
-     <div class="row"><span id="guild"></span></div>
-     <div class="row"><span id="level"></span><span id="faction"><img src="" /></span><span id="race"><img src="" /></span><span id="class"><img src="" /></span></div>
+   <div id="player_information" class="wow-popup">
+     <div id="title"><span id="name" class="shadow"></span></div>
+     <div class="row"><span id="guild" class="shadow"></span></div>
+     <div class="row"><span id="level" class="shadow"></span><span id="faction"><img src="" /></span><span id="race"><img src="" /></span><span id="class"><img src="" /></span></div>
      <div class="row"><span id="zone"></span></div>
    </div>
 
-   <div id="information">
-     <div id="header"><span id="cname"></span></div>
-     <div class="row"><span id="spawnid"></span></div>
-     <div class="row"><span id="cposx"></span></div>
-     <div class="row"><span id="cposy"></span></div>
-     <div class="row"><span id="cposz"></span></div>
-     <div class="row"><span id="orientation"></span></div>
+   <div id="information" class="wow-popup">
+     <div id="title"><span id="cname" class="shadow"></span></div>
+     <div class="row"><span id="spawnid" class="shadow"></span></div>
+     <div class="row"><span id="cposx" class="shadow"></span></div>
+     <div class="row"><span id="cposy" class="shadow"></span></div>
+     <div class="row"><span id="cposz" class="shadow"></span></div>
+     <div class="row"><span id="orientation" class="shadow"></span></div>
      <div id="cimage"></div>
    </div>
 
