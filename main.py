@@ -92,17 +92,12 @@ def get_player_position(message):
                   Realm().get_player_online("alpha_realm"),
                   namespace=webapp['namespace'])
 
-    global thread, thread_player_online
+    global thread_stop_event, thread_player_online_stop_event
 
+    thread_stop_event.clear()
     thread_player_online_stop_event.set()
-
-    if not thread.is_alive():
-        print("Starting Thread")
-        thread = socketio.start_background_task(player_position)
-
-    if not thread_player_online.is_alive():
-        print("Starting Thread")
-        thread_player_online = socketio.start_background_task(player_online)
+    thread_player_online_stop_event.clear()
+    playermap_connect()
 
 
 @socketio.on('get_worldport', namespace=webapp['namespace'])

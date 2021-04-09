@@ -30,6 +30,7 @@ function divHide(e, id) {
   var div = document.getElementById(id);
   $("#" + id).hide();
 }
+var position;
 
 $(document).ready(function() {
   console.log("ready");
@@ -37,7 +38,6 @@ $(document).ready(function() {
 
   //connect to the socket server.
   var socket = io.connect('http://' + document.domain + ':' + location.port + '/playermap');
-  var position = ""
 
   socket.on('new_worldport', function(position) {
     console.log("Worldport update")
@@ -175,20 +175,26 @@ $(document).ready(function() {
         'top': position[i]['posy']
       });
 
+      $("#" + i).data("data-name", position[i]["name"])
+      $("#" + i).data("data-level", position[i]["level"])
+      $("#" + i).data("data-zone", position[i]["zone"])
+      $("#" + i).data("data-race", position[i]["race"])
+      $("#" + i).data("data-class", position[i]["class"])
+      $("#" + i).data("data-faction", position[i]["faction"])
+      $("#" + i).data("data-gender", position[i]["gender"])
     }
 
     // show info next to mouse, player
-    $('#world').on('mouseover', ".player_location", function() {
+    $('#world').on('mouseover', ".player_location", function(event) {
       ID = $(this).attr('id');
 
-      $("#name").text(position[ID]['name']);
-      $("#level").text("Level " + position[ID]['level']);
+      $("#name").text($("#" + ID).data("data-name"));
+      $("#level").text("Level " + $("#" + ID).data("data-level"));
       // $("#guild").text(position[ID]['guild']));
-      $("#name").text(position[ID]['name']);
-      $("#faction").html("<img class='left_padding' src='/static/img/map/" + position[ID]['faction'] + "icon.gif' />");
-      $("#race").html("<img class='left_padding' src='/static/img/c_icons/" + position[ID]['race'] + "-" + position[ID]['gender'] + ".gif' />");
-      $("#class").html("<img class='left_padding' src='/static/img/c_icons/" + position[ID]['class'] + ".gif' />");
-      $("#zone").html(position[ID]['zone']);
+      $("#faction").html("<img class='left_padding' src='/static/img/map/" + $("#" + ID).data("data-faction") + "icon.gif' />");
+      $("#race").html("<img class='left_padding' src='/static/img/c_icons/" + $("#" + ID).data("data-race") + "-" + $("#" + ID).data("data-gender") + ".gif' />");
+      $("#class").html("<img class='left_padding' src='/static/img/c_icons/" + $("#" + ID).data("data-class") + ".gif' />");
+      $("#zone").html($("#" + ID).data("data-zone"));
     });
   });
 
