@@ -30,7 +30,6 @@ class Dbc:
                 'posx': pos['x'],
                 'posy': pos['y'],
                 'show': "information"
-
             })
 
         return lst
@@ -53,6 +52,8 @@ class Realm:
                 """SELECT name FROM area_template
                 WHERE entry = '{}' """.format(record[27]))
 
+            # guild = Mysqld("alpha_realm").guery()
+
             pos = Azeroth_053(record[17], record[18]).maps(record[20])
 
             if record[3] in allience:
@@ -71,6 +72,7 @@ class Realm:
                 'map': record[20],
                 'posx': pos['x'],
                 'posy': pos['y'],
+                # 'guild': guild,
                 'faction': faction,
                 'zone': zone,
                 'show': 'player_information'

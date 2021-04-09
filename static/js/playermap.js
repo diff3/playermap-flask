@@ -146,7 +146,6 @@ $(document).ready(function() {
         $("#cposx").text("posx: " + position[ID]['position_x']);
         $("#cposy").text("posy: " + position[ID]['position_y']);
         $("#cposz").text("posz: " + position[ID]['position_z']);
-        // $("#orientation").text("orientation: " + position[ID]['position_o']);
       });
     }
   });
@@ -154,8 +153,6 @@ $(document).ready(function() {
   socket.on('player_online', function(online) {
     $("#player_online").text(online + " online")
   });
-
-
 
   //receive details from server
   socket.on('newposition', function(position) {
@@ -186,7 +183,7 @@ $(document).ready(function() {
 
       $("#name").text(position[ID]['name']);
       $("#level").text("Level " + position[ID]['level']);
-      $("#guild").text("");
+      // $("#guild").text(position[ID]['guild']));
       $("#name").text(position[ID]['name']);
       $("#faction").html("<img class='left_padding' src='/static/img/map/" + position[ID]['faction'] + "icon.gif' />");
       $("#race").html("<img class='left_padding' src='/static/img/c_icons/" + position[ID]['race'] + "-" + position[ID]['gender'] + ".gif' />");
