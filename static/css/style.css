@@ -13,7 +13,6 @@ body {
   margin-left: -483px;
   height: 732px;
   width: 966px;
-  background-image: url(/static/img/wowlogo.png), url(/static/img/map/azeroth.jpg);
   background-position: center top, left top;
   background-repeat: no-repeat;
   z-index: 10;

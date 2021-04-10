@@ -33,6 +33,8 @@ function divHide(e, id) {
 var position;
 
 $(document).ready(function() {
+
+
   console.log("ready");
 
 

@@ -9,6 +9,13 @@ from time import sleep  # noqa
 from threading import Thread, Event
 
 
+test = {
+    "TesT1": "test"
+}
+
+print(test['TesT1'])
+
+
 __author__ = 'entropy'
 
 config = configparser.ConfigParser()
@@ -16,6 +23,7 @@ config.read('config.conf')
 
 opac = dict(config.items('OPAC'))
 webapp = dict(config.items('WEBAPP'))
+expansion = dict(config.items(webapp['expansion']))
 
 
 app = Flask(__name__)
@@ -35,13 +43,15 @@ thread_player_online_stop_event = Event()
 def index():
     return render_template('index.html',
                            title=opac['title'],
-                           admin=opac['admin'])
+                           admin=opac['admin'],
+                           map=expansion['mapfile'],
+                           logo=expansion['logofile'])
 
 
 def player_position():
     while not thread_stop_event.isSet():
         socketio.emit('newposition',
-                      Realm().get_player_position("alpha_realm"),
+                      Realm().get_player_position("alpha_realm", expansion),
                       namespace=webapp['namespace'])
 
         socketio.sleep(int(webapp['timer']))
@@ -59,7 +69,7 @@ def player_online():
 @socketio.on('connect', namespace=webapp['namespace'])
 def playermap_connect():
     socketio.emit('newposition',
-                  Realm().get_player_position("alpha_realm"),
+                  Realm().get_player_position("alpha_realm", expansion),
                   namespace=webapp['namespace'])
 
     socketio.emit('player_online',
@@ -85,7 +95,7 @@ def test_disconnect():
 @socketio.on('get_player_position', namespace=webapp['namespace'])
 def get_player_position(message):
     socketio.emit('newposition',
-                  Realm().get_player_position("alpha_realm"),
+                  Realm().get_player_position("alpha_realm", expansion),
                   namespace=webapp['namespace'])
 
     socketio.emit('player_online',

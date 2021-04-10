@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from utils.calculations import Azeroth_053
+from utils.calculations import Azeroth
 from database.mysqld import Mysqld
 
 allience = [1, 3, 4, 7]
@@ -19,7 +19,7 @@ class Dbc:
         lst = list()
 
         for record in results:
-            pos = Azeroth_053(record[2], record[3]).maps(record[1])
+            pos = Azeroth(record[2], record[3]).maps(record[1])
 
             lst.append({
                 'id': record[0],
@@ -39,7 +39,7 @@ class Realm:
     def __init__(self):
         pass
 
-    def get_player_position(self, database):
+    def get_player_position(self, database, expansion):
         results = Mysqld(database).query(
             """SELECT * FROM characters
             WHERE map = '0' AND online='1'
@@ -54,7 +54,7 @@ class Realm:
 
             # guild = Mysqld("alpha_realm").guery()
 
-            pos = Azeroth_053(record[17], record[18]).maps(record[20])
+            pos = Azeroth(record[17], record[18]).maps(expansion, record[20])
 
             if record[3] in allience:
                 faction = "alliance"
@@ -83,8 +83,7 @@ class Realm:
     def get_player_online(self, database):
         results = Mysqld(database).query(
             """SELECT count(guid) FROM characters
-            WHERE map = '0' AND online='1'
-            OR map = '1' AND online = '1'""")
+            WHERE online='1'""")
 
         return results[0][0]
 
@@ -102,7 +101,7 @@ class World:
         lst = list()
 
         for record in results:
-            pos = Azeroth_053(record[8], record[9]).maps(record[5])
+            pos = Azeroth(record[8], record[9]).maps(record[5])
 
             lst.append({
                 'id': record[0],
@@ -126,7 +125,7 @@ class World:
         lst = list()
 
         for record in results:
-            pos = Azeroth_053(record[1], record[2]).maps(record[5])
+            pos = Azeroth(record[1], record[2]).maps(record[5])
 
             lst.append({
                 'id': record[0],
@@ -153,7 +152,7 @@ class World:
         lst = list()
 
         for record in results:
-            pos = Azeroth_053(record[3], record[4]).maps(record[2])
+            pos = Azeroth(record[3], record[4]).maps(record[2])
 
             lst.append({
                 'id': record[0],
