@@ -60,7 +60,7 @@ def player_position():
 def player_online():
     while not thread_player_online_stop_event.isSet():
         socketio.emit('player_online',
-                      Realm().get_player_online("alpha_realm"),
+                      Realm().get_player_online("alpha_realm", expansion),
                       namespace=webapp['namespace'])
 
         socketio.sleep(int(webapp['timer']))
@@ -73,7 +73,7 @@ def playermap_connect():
                   namespace=webapp['namespace'])
 
     socketio.emit('player_online',
-                  Realm().get_player_online("alpha_realm"),
+                  Realm().get_player_online("alpha_realm", expansion),
                   namespace=webapp['namespace'])
 
     global thread, thread_player_online
@@ -114,7 +114,7 @@ def get_player_position(message):
 def get_worldport(message):
     thread_stop_event.set()
     socketio.emit('new_worldport',
-                  World().get_worldport("alpha_world"),
+                  World().get_worldport("alpha_world", expansion),
                   namespace=webapp['namespace'])
 
 
@@ -122,7 +122,7 @@ def get_worldport(message):
 def get_creature_position(message):
     thread_stop_event.set()
     socketio.emit('new_creature_position',
-                  World().get_creature_position("alpha_world"),
+                  World().get_creature_position("alpha_world", expansion),
                   namespace=webapp['namespace'])
 
 
@@ -130,7 +130,7 @@ def get_creature_position(message):
 def get_gameobjects(message):
     thread_stop_event.set()
     socketio.emit('new_gameobjects',
-                  World().get_gameobjects("alpha_world"),
+                  World().get_gameobjects("alpha_world", expansion),
                   namespace=webapp['namespace'])
 
 
@@ -139,6 +139,14 @@ def get_taxi_nodes(message):
     thread_stop_event.set()
     socketio.emit('new_taxi_location',
                   Dbc().get_taxi_nodes("alpha_dbc"),
+                  namespace=webapp['namespace'])
+
+
+@socketio.on('get_npc_with_quests', namespace=webapp['namespace'])
+def get_npc_with_quests(message):
+    thread_stop_event.set()
+    socketio.emit('new_quest_givers',
+                  World().get_npc_with_quests("alpha_world", expansion),
                   namespace=webapp['namespace'])
 
 

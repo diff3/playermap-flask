@@ -125,6 +125,42 @@ $(document).ready(function() {
     }
   });
 
+  socket.on('new_quest_givers', function(position) {
+    console.log("quest giver update")
+    var i, locations;
+
+    $("#world").html("");
+    for (i = 0; i < position.length; i++) {
+      locations = '<img src="/static/img/map/group-icon.gif" class="new_questgiver_location" id="' + i + '" onmouseover="divShow(event, \'' + position[i]['show'] + '\')" onmouseout="divHide(event,\'' + position[i]['show'] + '\')" \>';
+
+      $("#world").append(locations);
+
+      $("#" + i).css({
+        'position': 'absolute',
+        'left': position[i]['posx'],
+        'top': position[i]['posy']
+      });
+
+      $('#world').on('mouseover', ".new_questgiver_location", function() {
+        ID = $(this).attr('id');
+
+        $("#questgiver .row .title #name").text(position[ID]['name']);
+        $("#questgiver .row #quest_title").text(position[ID]['title']);
+        $("#questgiver .row #posx").text("posx: " + position[ID]['position_x']);
+        $("#questgiver .row #posy").text("posy: " + position[ID]['position_y']);
+      });
+    }
+  });
+/*
+  <div id="questgiver" class="wow-popup">
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span id="quest_title" class="shadow"></span></div>
+    <div class="row"><span id="posx" class="shadow"></span></div>
+    <div class="row"><span id="posy" class="shadow"></span></div>
+    <div class="row"><span id="posz" class="shadow"></span></div>
+  </div>
+  */
+
   socket.on('new_gameobjects', function(position) {
     console.log("new gameobjects update")
     var i, locations;
@@ -249,4 +285,14 @@ $(document).ready(function() {
     $("cimage").html("");
     position = null;
   });
+
+  $('#get_npc_with_quests').on('click', function() {
+    socket.emit('get_npc_with_quests', 'update');
+    console.log("Requestion: Quest givers");
+    $("#world").html("");
+    $("#cposz").text("");
+    $("orientation").html("");
+    $("cimage").html("");
+    position = null;
+  })
 });

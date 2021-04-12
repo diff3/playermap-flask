@@ -36,6 +36,7 @@
    <button id="get_player_position" type="button">Players</button><br/>
    <button id="get_taxi_nodes" type="button">Taxi nodes</button><br/>
    <button id="get_worldport" type="button">Worldport</button><br/>
+   <button id="get_npc_with_quests" type="button">Questgivers</button><br/>
  </div>
    {% endif %}
 
@@ -55,6 +56,30 @@
      <div class="row"><span id="orientation" class="shadow"></span></div>
      <div id="cimage"></div>
    </div>
+
+   <div id="questgiver" class="wow-popup">
+     <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+     <div class="row"><span id="quest_title" class="shadow"></span></div>
+     <div class="row"><span id="posx" class="shadow"></span></div>
+     <div class="row"><span id="posy" class="shadow"></span></div>
+     <div class="row"><span id="posz" class="shadow"></span></div>
+   </div>
+
+<!--
+   'name': record[0],
+           'title': record[1],
+           'details': record[2],
+           'objectives': record[3],
+           'prevquestid': record[4],
+           'nextquestid': record[5],
+           'map': record[9],
+           'position_x': record[6],
+           'position_y': record[7],
+           'position_z': record[8],
+           'posx': pos['x'],
+           'posy': pos['y'],
+           'show': "questgiver"
+         -->
 
    <script>
      $("#world").css({
