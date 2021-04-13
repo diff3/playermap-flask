@@ -19,6 +19,18 @@ secret_key=secret!
 timer=60
 expansion=3.3.5a
 
+[dun_morogh]
+mapfile=/static/img/map/dun_morogh.jpg
+logofile=/static/img/wowlogo.png
+map_0_offset_x=365
+map_0_Offset_y=-945
+map_0_mod_x=0.224
+map_0_mod_y=0.224
+map_1_offset_x=145
+map_1_offset_y=390
+map_1_mod_x=0.03240
+map_1_mod_y=0.030140
+
 [0.5.3]
 mapfile=/static/img/map/azeroth-0.5.3.jpg
 logofile=/static/img/wowlogo.png
