@@ -69,7 +69,8 @@ def player_online():
 @socketio.on('connect', namespace=webapp['namespace'])
 def playermap_connect():
     socketio.emit('newposition',
-                  Realm().get_player_position("alpha_realm", expansion),
+                 # Realm().get_player_position("alpha_realm", expansion),
+                 Realm().get_players_in_zone("alpha_realm", expansion),
                   namespace=webapp['namespace'])
 
     socketio.emit('player_online',
@@ -149,6 +150,13 @@ def get_npc_with_quests(message):
                   World().get_npc_with_quests("alpha_world", expansion),
                   namespace=webapp['namespace'])
 
+
+@socketio.on('get_players_in_zone', namespace=webapp['namespace'])
+def get_players_in_zone(message):
+    thread_stop_event.set()
+    socketio.emit('players_in_zone',
+                  World().get_players_in_zone("alpha_world", expansion),
+                  namespace=webapp['namespace'])
 
 if __name__ == '__main__':
     socketio.run(app, host=webapp['host'], port=webapp['port'])

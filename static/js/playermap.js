@@ -148,6 +148,9 @@ $(document).ready(function() {
         $("#questgiver .row #quest_title").text(position[ID]['title']);
         $("#questgiver .row #posx").text("posx: " + position[ID]['position_x']);
         $("#questgiver .row #posy").text("posy: " + position[ID]['position_y']);
+        $("#questgiver .row #details").text(position[ID]['details']);
+        $("#questgiver .row #objectives").text(position[ID]['objectives']);
+
       });
     }
   });

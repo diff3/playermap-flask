@@ -87,6 +87,63 @@ class Realm:
 
         return results[0][0]
 
+    def get_players_in_zone(self, database, expansion):
+        results = Mysqld(database).query(
+            """SELECT * FROM characters
+            WHERE map = '0'
+            AND online='1'
+            AND zone = '1'""")
+
+        """
+        SELECT
+        c.name, a.AreaName_enUS
+        FROM
+        alpha_realm.characters as c, alpha_dbc.AreaTable as a
+        WHERE
+        map='0' AND
+        c.zone = a.ID AND
+        a.ParentAreaNum='1048576'
+        OR map ='0' AND
+        c.zone = a.ID AND
+        a.AreaNumber = '1048576';
+        """
+
+        lst = list()
+
+        for record in results:
+            print(record)
+            # zone = Mysqld("alpha_dbc").query(
+            #    """SELECT name FROM area_template
+            #    WHERE entry = '{}' """.format(record[27]))
+
+            # guild = Mysqld("alpha_realm").guery()
+
+            pos = Azeroth(record[17], record[18]).maps(expansion, record[20])
+
+            if record[3] in allience:
+                faction = "alliance"
+            else:
+                faction = "horde"
+
+            lst.append({
+                'name': record[2],
+                'position_x': record[17],
+                'position_y': record[18],
+                'race': record[3],
+                'class': record[4],
+                'level': record[6],
+                'gender': record[5],
+                'map': record[20],
+                'posx': pos['x'],
+                'posy': pos['y'],
+                # 'guild': guild,
+                'faction': faction,
+                # 'zone': zone,
+                'show': 'player_information'
+            })
+
+        return lst
+
 
 class World:
     def __init__(self):
@@ -96,7 +153,7 @@ class World:
         results = Mysqld(database).query(
             """SELECT * FROM spawns_creatures
             WHERE map = '0' AND ignored= '0'
-            OR map = '1' AND ignored = '0'""")
+            OR map = '0' AND ignored = '0'""")
 
         lst = list()
 
@@ -120,7 +177,7 @@ class World:
     def get_worldport(self, database, expansion):
         results = Mysqld(database).query(
             """SELECT * FROM worldports
-            WHERE map = '0' OR map = '1'""")
+            WHERE map = '0' OR map = '0'""")
 
         lst = list()
 
@@ -191,6 +248,11 @@ class World:
             cq.entry = ct.entry AND
             cq.quest = qt.entry AND
             ct.entry = sc.spawn_entry1 AND
+            sc.map = '0' AND
+            sc.position_x < -4500 AND
+            sc.position_x > -6400 AND
+            sc.position_y > -2480 AND
+            sc.position_y < 700 AND
             qt.ignored = '0'"""
         )
 

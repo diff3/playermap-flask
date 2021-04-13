@@ -39,10 +39,20 @@ body {
   min-height: 40px;
 }
 
-#information, #questgiver {
+#information {
   position: absolute;
   display: none;
   width: auto;
+  min-width: 150px;
+  height: auto;
+  min-height: 75px;
+}
+
+#questgiver {
+  position: absolute;
+  display: none;
+  width: auto;
+  max-width: 300px;
   min-width: 150px;
   height: auto;
   min-height: 75px;
