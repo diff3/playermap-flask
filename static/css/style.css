@@ -18,7 +18,7 @@ body {
   z-index: 10;
 }
 
-#player_online {
+#players_online {
   position: relative;
   margin: 0 auto;
   top: 150px;
@@ -30,13 +30,32 @@ body {
   z-index: 11;
 }
 
-#player_information {
+.wow-popup {
+  background: rgba(0, 0, 0, 0.73);
+  border-radius: 5px;
+  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border: 1px;
+  border-style: solid;
+  border-color: rgba(208, 202, 204, 1) rgba(90, 71, 63, 1) rgba(90, 71, 63, 1) rgba(208, 202, 204, 1);
+  z-index: 99999;
+}
+
+.popup {
   position: absolute;
   display: none;
   width: auto;
   min-width: 150px;
+  max-width: 300px;
   height: auto;
   min-height: 40px;
+}
+
+#player_info_popup {
+
+}
+
+#quest_info_popup {
+  min-height: 75px;
 }
 
 #information {
@@ -48,15 +67,7 @@ body {
   min-height: 75px;
 }
 
-#questgiver {
-  position: absolute;
-  display: none;
-  width: auto;
-  max-width: 300px;
-  min-width: 150px;
-  height: auto;
-  min-height: 75px;
-}
+
 
 #menu {
   position: relative;
@@ -76,15 +87,7 @@ button {
   margin: 0 auto;
 }
 
-.wow-popup {
-  background: rgba(0, 0, 0, 0.73);
-  border-radius: 5px;
-  box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border: 1px;
-  border-style: solid;
-  border-color: rgba(208, 202, 204, 1) rgba(90, 71, 63, 1) rgba(90, 71, 63, 1) rgba(208, 202, 204, 1);
-  z-index: 99999;
-}
+
 
 .icon {
   position: absolute;
@@ -116,6 +119,8 @@ button {
   padding-left: 5px;
 }
 
-#cimg {
-  width: 150px;
+.image {
+  width: auto;
+  max-width: 200px;
+  min-width: 0;
 }

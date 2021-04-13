@@ -11,7 +11,7 @@ class Dbc:
     def __init__(self):
         pass
 
-    def get_taxi_nodes(self, database, expansion):
+    def get_taxis_location(self, database, expansion):
         results = Mysqld(database).query(
             """SELECT * FROM TaxiNodes
             WHERE ContinentID = '0' OR ContinentID = '1'""")
@@ -29,7 +29,7 @@ class Dbc:
                 'name': record[5],
                 'posx': pos['x'],
                 'posy': pos['y'],
-                'show': "information"
+                'show': "taxi_info_popup"
             })
 
         return lst
@@ -39,7 +39,7 @@ class Realm:
     def __init__(self):
         pass
 
-    def get_player_position(self, database, expansion):
+    def get_players_location(self, database, expansion):
         results = Mysqld(database).query(
             """SELECT * FROM characters
             WHERE map = '0' AND online='1'
@@ -75,12 +75,12 @@ class Realm:
                 # 'guild': guild,
                 'faction': faction,
                 'zone': zone,
-                'show': 'player_information'
+                'show': 'player_info_popup'
             })
 
         return lst
 
-    def get_player_online(self, database, expansion):
+    def get_players_online(self, database, expansion):
         results = Mysqld(database).query(
             """SELECT count(guid) FROM characters
             WHERE online='1'""")
@@ -149,35 +149,44 @@ class World:
     def __init__(self):
         pass
 
-    def get_creature_position(self, database, expansion):
+    def get_creatures_location(self, database, expansion):
         results = Mysqld(database).query(
-            """SELECT * FROM spawns_creatures
-            WHERE map = '0' AND ignored= '0'
-            OR map = '0' AND ignored = '0'""")
+            """SELECT
+                sc.spawn_id, ct.name, sc.position_x, sc.position_y,
+                sc.position_z, sc.orientation, sc.map, ct.display_id1
+               FROM
+                spawns_creatures as sc, creature_template as ct
+               WHERE
+                sc.map = '0' AND sc.ignored= '0' AND sc.spawn_entry1 = ct.entry
+               OR
+                sc.map = '0' AND sc.ignored = '0' AND
+                sc.spawn_entry1 = ct.entry""")
 
         lst = list()
 
         for record in results:
-            pos = Azeroth(record[8], record[9]).maps(expansion, record[5])
+            pos = Azeroth(record[2], record[3]).maps(expansion, record[6])
 
             lst.append({
                 'id': record[0],
-                'position_x': record[8],
-                'position_y': record[9],
-                'position_z': record[10],
-                'orientation': record[11],
-                'map': record[5],
+                'name': record[1],
+                'position_x': record[2],
+                'position_y': record[3],
+                'position_z': record[4],
+                'orientation': record[5],
+                'map': record[6],
                 'posx': pos['x'],
                 'posy': pos['y'],
-                'show': "information"
+                'image': record[7],
+                'show': "creature_info_popup"
             })
 
         return lst
 
-    def get_worldport(self, database, expansion):
+    def get_worldports_location(self, database, expansion):
         results = Mysqld(database).query(
             """SELECT * FROM worldports
-            WHERE map = '0' OR map = '0'""")
+            WHERE map = '0' OR map = '1'""")
 
         lst = list()
 
@@ -192,12 +201,12 @@ class World:
                 'map': record[5],
                 'posx': pos['x'],
                 'posy': pos['y'],
-                'show': "information"
+                'show': "worldport_info_popup"
             })
 
         return lst
 
-    def get_gameobjects(self, database, expansion):
+    def get_gameobjects_location(self, database, expansion):
         results = Mysqld(database).query(
             """SELECT sg.spawn_entry, gt.name, sg.spawn_map, sg.spawn_positionX,
             sg.spawn_positionY, sg.spawn_positionZ, sg.spawn_orientation
@@ -218,15 +227,15 @@ class World:
                 'position_x': record[3],
                 'position_y': record[4],
                 'position_z': record[5],
-                'spawn_orientation': record[6],
+                'orientation': record[6],
                 'posx': pos['x'],
                 'posy': pos['y'],
-                'show': "information"
+                'show': "gameobject_info_popup"
             })
 
         return lst
 
-    def get_npc_with_quests(self, database, expansion):
+    def get_quests_location(self, database, expansion):
         results = Mysqld(database).query(
             """SELECT
             ct.name,
@@ -275,7 +284,7 @@ class World:
                 'position_z': record[8],
                 'posx': pos['x'],
                 'posy': pos['y'],
-                'show': "questgiver"
+                'show': "quest_info_popup"
             })
 
         return lst

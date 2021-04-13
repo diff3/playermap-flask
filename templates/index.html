@@ -6,7 +6,7 @@
 <head>
   <title>{{ title }}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link rel=”icon” type= “image/x-icon” href="favicon.ico" />
+  <link rel=”icon” type=“image/x-icon” href="favicon.ico" />
 
   <!-- https://jquery.com/download/ -->
   <script src="/static/js/jquery-3.6.0.min.js"></script>
@@ -14,9 +14,14 @@
   <!-- https://github.com/socketio/socket.io/releases -->
   <script src="/static/js/socket.io.min.js"></script>
 
+  <script src="/static/js/utils/popup.js"></script>
+  <script src="/static/js/locations/creatures_location.js"></script>
+  <script src="/static/js/locations/gameobjects_location.js"></script>
+  <script src="/static/js/locations/players_location.js"></script>
+  <script src="/static/js/locations/quests_location.js"></script>
+  <script src="/static/js/locations/taxis_location.js"></script>
+  <script src="/static/js/locations/worldports_location.js"></script>
   <script src="/static/js/playermap.js"></script>
-
-
 
   <!-- https://html5boilerplate.com -->
   <link rel="stylesheet" href="/static/css/normal.css" />
@@ -25,69 +30,78 @@
 
 <body>
   <div id="world" class="center"></div>
-  <!-- <div id="player_online" class="wow-popup center"></div> -->
-
+  <div id="players_online" class="wow-popup center"></div>
 
   {% if admin == "True" %}
   <div id="menu" class="wow-popup">
-    <div class="title">Menu</title></div>
-   <button id="get_creature_position" type="button">Creatures</button><br/>
-   <button id="get_gameobjects" type="button">Game objects</button><br/>
-   <button id="get_player_position" type="button">Players</button><br/>
-   <button id="get_taxi_nodes" type="button">Taxi nodes</button><br/>
-   <button id="get_worldport" type="button">Worldport</button><br/>
-   <button id="get_npc_with_quests" type="button">Questgivers</button><br/>
- </div>
-   {% endif %}
+    <div class="title">Menu</title>
+    </div>
+    <button id="get_creatures_button" type="button">Creatures</button><br />
+    <button id="get_gameobjects_button" type="button">Game objects</button><br />
+    <button id="get_players_button" type="button">Players</button><br />
+    <button id="get_taxis_button" type="button">Taxi nodes</button><br />
+    <button id="get_worldports_button" type="button">Worldport</button><br />
+    <button id="get_quests_button" type="button">Questgivers</button><br />
+  </div>
+  {% endif %}
 
-   <div id="player_information" class="wow-popup">
-     <div class="row"><span class="title"><span id="name" class="shadow"></span></span></div>
-     <div class="row"><span id="guild" class="shadow"></span></div>
-     <div class="row"><span id="level" class="shadow"></span><span id="faction"><img src="" /></span><span id="race"><img src="" /></span><span id="class"><img src="" /></span></div>
-     <div class="row"><span id="zone" class="shadow"></span></div>
-   </div>
+  <div id="creature_info_popup" class="wow-popup popup">
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span id="spawnid" class="shadow"></span></div>
+    <div class="row"><span id="posx" class="shadow"></span></div>
+    <div class="row"><span id="posy" class="shadow"></span></div>
+    <div class="row"><span id="posz" class="shadow"></span></div>
+    <div class="row"><span id="orientation" class="shadow"></span></div>
+    <div id="image"></div>
+  </div>
 
-   <div id="information" class="wow-popup">
-     <div class="row"><span class="title"><span id="cname" class="shadow"></span></<span></div>
-     <div class="row"><span id="spawnid" class="shadow"></span></div>
-     <div class="row"><span id="cposx" class="shadow"></span></div>
-     <div class="row"><span id="cposy" class="shadow"></span></div>
-     <div class="row"><span id="cposz" class="shadow"></span></div>
-     <div class="row"><span id="orientation" class="shadow"></span></div>
-     <div id="cimage"></div>
-   </div>
+  <div id="gameobject_info_popup" class="wow-popup popup">
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span id="spawnid" class="shadow"></span></div>
+    <div class="row"><span id="posx" class="shadow"></span></div>
+    <div class="row"><span id="posy" class="shadow"></span></div>
+    <div class="row"><span id="posz" class="shadow"></span></div>
+    <div class="row"><span id="orientation" class="shadow"></span></div>
+  </div>
 
-   <div id="questgiver" class="wow-popup">
-     <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
-     <div class="row"><span id="quest_title" class="shadow"></span></div>
-     <div class="row"><span id="posx" class="shadow"></span></div>
-     <div class="row"><span id="posy" class="shadow"></span></div>
-     <div class="row"><span id="posz" class="shadow"></span></div>
-     <div class="row"><span id="details" class="shadow"></span></div>
-     <div class="row"><span id="objectives" class="shadow"></span></div>
-   </div>
+  <div id="player_info_popup" class="wow-popup popup">
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></span></div>
+    <div class="row"><span id="guild" class="shadow"></span></div>
+    <div class="row"><span id="level" class="shadow"></span><span id="faction"><img src="" /></span><span id="race"><img src="" /></span><span id="class"><img src="" /></span></div>
+    <div class="row"><span id="zone" class="shadow"></span></div>
+  </div>
 
-<!--
-   'name': record[0],
-           'title': record[1],
-           'details': record[2],
-           'objectives': record[3],
-           'prevquestid': record[4],
-           'nextquestid': record[5],
-           'map': record[9],
-           'position_x': record[6],
-           'position_y': record[7],
-           'position_z': record[8],
-           'posx': pos['x'],
-           'posy': pos['y'],
-           'show': "questgiver"
-         -->
+  <div id="quest_info_popup" class="wow-popup popup">
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span id="quest_title" class="shadow"></span></div>
+    <div class="row"><span id="posx" class="shadow"></span></div>
+    <div class="row"><span id="posy" class="shadow"></span></div>
+    <div class="row"><span id="posz" class="shadow"></span></div>
+    <div class="row"><span id="details" class="shadow"></span></div>
+    <div class="row"><span id="objectives" class="shadow"></span></div>
+    <div class="row"><span id="prevquestid" class="shadow"></span></div>
+    <div class="row"><span id="nextquestid" class="shadow"></span></div>
+  </div>
 
-   <script>
-     $("#world").css({
-         "background-image": "url('{{ logo }}'), url('{{ map }}')"
-       });
-   </script>
+  <div id="taxi_info_popup" class="wow-popup popup">
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span id="spawnid" class="shadow"></span></div>
+    <div class="row"><span id="posx" class="shadow"></span></div>
+    <div class="row"><span id="posy" class="shadow"></span></div>
+  </div>
+
+  <div id="worldport_info_popup" class="wow-popup popup">
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span id="spawnid" class="shadow"></span></div>
+    <div class="row"><span id="posx" class="shadow"></span></div>
+    <div class="row"><span id="posy" class="shadow"></span></div>
+  </div>
+
+  <script>
+    $("#world").css({
+      "background-image": "url('{{ logo }}'), url('{{ map }}')"
+    });
+  </script>
 </body>
 
 </html>

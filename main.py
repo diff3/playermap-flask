@@ -9,13 +9,6 @@ from time import sleep  # noqa
 from threading import Thread, Event
 
 
-test = {
-    "TesT1": "test"
-}
-
-print(test['TesT1'])
-
-
 __author__ = 'entropy'
 
 config = configparser.ConfigParser()
@@ -35,8 +28,8 @@ socketio = SocketIO(app, async_mode=None, logger=True, engineio_logger=True)
 thread = Thread()
 thread_stop_event = Event()
 
-thread_player_online = Thread()
-thread_player_online_stop_event = Event()
+thread_players_online = Thread()
+thread_players_online_stop_event = Event()
 
 
 @app.route('/')
@@ -48,115 +41,109 @@ def index():
                            logo=expansion['logofile'])
 
 
-def player_position():
-    while not thread_stop_event.isSet():
-        socketio.emit('newposition',
-                      Realm().get_player_position("alpha_realm", expansion),
-                      namespace=webapp['namespace'])
-
-        socketio.sleep(int(webapp['timer']))
-
-
-def player_online():
-    while not thread_player_online_stop_event.isSet():
-        socketio.emit('player_online',
-                      Realm().get_player_online("alpha_realm", expansion),
-                      namespace=webapp['namespace'])
-
-        socketio.sleep(int(webapp['timer']))
-
-
 @socketio.on('connect', namespace=webapp['namespace'])
 def playermap_connect():
-    socketio.emit('newposition',
-                 # Realm().get_player_position("alpha_realm", expansion),
-                 Realm().get_players_in_zone("alpha_realm", expansion),
-                  namespace=webapp['namespace'])
-
-    socketio.emit('player_online',
-                  Realm().get_player_online("alpha_realm", expansion),
-                  namespace=webapp['namespace'])
-
-    global thread, thread_player_online
+    global thread, thread_players_online
 
     if not thread.is_alive():
         print("Starting Thread")
-        thread = socketio.start_background_task(player_position)
+        thread = socketio.start_background_task(players_locations)
 
-    if not thread_player_online.is_alive():
+    if not thread_players_online.is_alive():
         print("Starting Thread")
-        thread_player_online = socketio.start_background_task(player_online)
+        thread_players_online = socketio.start_background_task(players_online)
 
 
 @socketio.on('disconnect', namespace=webapp['namespace'])
-def test_disconnect():
+def disconnect():
     print('Client disconnected')
 
 
-@socketio.on('get_player_position', namespace=webapp['namespace'])
-def get_player_position(message):
-    socketio.emit('newposition',
-                  Realm().get_player_position("alpha_realm", expansion),
+def players_locations():
+    socketio.emit('updated_players_location',
+                  Realm().get_players_location("alpha_realm", expansion),
+                  # Realm().get_players_in_zone("alpha_realm", expansion),
                   namespace=webapp['namespace'])
 
-    socketio.emit('player_online',
-                  Realm().get_player_online("alpha_realm"),
+    while not thread_stop_event.isSet():
+        socketio.emit('updated_players_location',
+                      Realm().get_players_location("alpha_realm", expansion),
+                      namespace=webapp['namespace'])
+
+        socketio.sleep(int(webapp['timer']))
+
+
+def players_online():
+    socketio.emit('players_online',
+                  Realm().get_players_online("alpha_realm", expansion),
                   namespace=webapp['namespace'])
 
-    global thread_stop_event, thread_player_online_stop_event
+    while not thread_players_online_stop_event.isSet():
+        socketio.emit('players_online',
+                      Realm().get_players_online("alpha_realm", expansion),
+                      namespace=webapp['namespace'])
 
+        socketio.sleep(int(webapp['timer']))
+
+
+@socketio.on('request_creatures_location', namespace=webapp['namespace'])
+def creatures_location(message):
+    thread_stop_event.set()
+    socketio.emit('updated_creatures_location',
+                  World().get_creatures_location("alpha_world", expansion),
+                  namespace=webapp['namespace'])
+
+
+@socketio.on('request_gameobjects_location', namespace=webapp['namespace'])
+def gameobjects_location(message):
+    thread_stop_event.set()
+    socketio.emit('updated_gameobjects_location',
+                  World().get_gameobjects_location("alpha_world", expansion),
+                  namespace=webapp['namespace'])
+
+
+@socketio.on('request_players_location', namespace=webapp['namespace'])
+def players_location(message):
+    global thread_stop_event, thread_players_online_stop_event
+
+    # sync updates
     thread_stop_event.clear()
-    thread_player_online_stop_event.set()
-    thread_player_online_stop_event.clear()
+    thread_players_online_stop_event.set()
+    thread_players_online_stop_event.clear()
     playermap_connect()
 
 
-@socketio.on('get_worldport', namespace=webapp['namespace'])
-def get_worldport(message):
+@socketio.on('request_quests_location', namespace=webapp['namespace'])
+def quests_location(message):
     thread_stop_event.set()
-    socketio.emit('new_worldport',
-                  World().get_worldport("alpha_world", expansion),
+    socketio.emit('updated_quests_location',
+                  World().get_quests_location("alpha_world", expansion),
                   namespace=webapp['namespace'])
 
 
-@socketio.on('get_creature_position', namespace=webapp['namespace'])
-def get_creature_position(message):
+@socketio.on('request_taxis_location', namespace=webapp['namespace'])
+def taxis_location(message):
     thread_stop_event.set()
-    socketio.emit('new_creature_position',
-                  World().get_creature_position("alpha_world", expansion),
+    socketio.emit('updated_taxis_location',
+                  Dbc().get_taxis_location("alpha_dbc", expansion),
                   namespace=webapp['namespace'])
 
 
-@socketio.on('get_gameobjects', namespace=webapp['namespace'])
-def get_gameobjects(message):
+@socketio.on('request_worldports_location', namespace=webapp['namespace'])
+def get_worldports_location(message):
     thread_stop_event.set()
-    socketio.emit('new_gameobjects',
-                  World().get_gameobjects("alpha_world", expansion),
+    socketio.emit('updated_worldports_location',
+                  World().get_worldports_location("alpha_world", expansion),
                   namespace=webapp['namespace'])
 
 
-@socketio.on('get_taxi_nodes', namespace=webapp['namespace'])
-def get_taxi_nodes(message):
-    thread_stop_event.set()
-    socketio.emit('new_taxi_location',
-                  Dbc().get_taxi_nodes("alpha_dbc"),
-                  namespace=webapp['namespace'])
-
-
-@socketio.on('get_npc_with_quests', namespace=webapp['namespace'])
-def get_npc_with_quests(message):
-    thread_stop_event.set()
-    socketio.emit('new_quest_givers',
-                  World().get_npc_with_quests("alpha_world", expansion),
-                  namespace=webapp['namespace'])
-
-
-@socketio.on('get_players_in_zone', namespace=webapp['namespace'])
-def get_players_in_zone(message):
+@socketio.on('request_players_in_zone', namespace=webapp['namespace'])
+def players_in_zone(message):
     thread_stop_event.set()
     socketio.emit('players_in_zone',
                   World().get_players_in_zone("alpha_world", expansion),
                   namespace=webapp['namespace'])
+
 
 if __name__ == '__main__':
     socketio.run(app, host=webapp['host'], port=webapp['port'])
