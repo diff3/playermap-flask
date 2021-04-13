@@ -17,7 +17,7 @@ namespace=/playermap
 port=5000
 secret_key=secret!
 timer=60
-expansion=3.3.5a
+expansion=0.5.3
 
 [dun_morogh]
 mapfile=/static/img/map/dun_morogh.jpg
