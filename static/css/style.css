@@ -15,7 +15,7 @@ body {
   width: 966px;
   background-position: center top, left top;
   background-repeat: no-repeat;
-  z-index: 10;
+  z-index: 3;
 }
 
 #players_online {
@@ -79,15 +79,13 @@ body {
   padding: 10px;
 }
 
-button {
+button, select {
   width: 110px;
 }
 
 .center {
   margin: 0 auto;
 }
-
-
 
 .icon {
   position: absolute;

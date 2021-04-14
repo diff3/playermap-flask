@@ -11,8 +11,8 @@ class Dbc:
     def __init__(self):
         pass
 
-    def get_taxis_location(self, database, expansion):
-        results = Mysqld(database).query(
+    def get_taxis_location(self, expansion):
+        results = Mysqld("world_dbc").query(
             """SELECT * FROM TaxiNodes
             WHERE ContinentID = '0' OR ContinentID = '1'""")
 
@@ -39,8 +39,8 @@ class Realm:
     def __init__(self):
         pass
 
-    def get_players_location(self, database, expansion):
-        results = Mysqld(database).query(
+    def get_players_location(self, expansion):
+        results = Mysqld("alpha_realm").query(
             """SELECT * FROM characters
             WHERE map = '0' AND online='1'
             OR map = '1' AND online = '1'""")
@@ -80,15 +80,15 @@ class Realm:
 
         return lst
 
-    def get_players_online(self, database, expansion):
-        results = Mysqld(database).query(
+    def get_players_online(self, expansion):
+        results = Mysqld("alpha_realm").query(
             """SELECT count(guid) FROM characters
             WHERE online='1'""")
 
         return results[0][0]
 
-    def get_players_in_zone(self, database, expansion):
-        results = Mysqld(database).query(
+    def get_players_in_zone(self, expansion):
+        results = Mysqld("alpha_realm").query(
             """SELECT * FROM characters
             WHERE map = '0'
             AND online='1'
@@ -149,8 +149,8 @@ class World:
     def __init__(self):
         pass
 
-    def get_creatures_location(self, database, expansion):
-        results = Mysqld(database).query(
+    def get_creatures_location(self, expansion):
+        results = Mysqld("alpha_world").query(
             """SELECT
                 sc.spawn_id, ct.name, sc.position_x, sc.position_y,
                 sc.position_z, sc.orientation, sc.map, ct.display_id1
@@ -183,8 +183,8 @@ class World:
 
         return lst
 
-    def get_worldports_location(self, database, expansion):
-        results = Mysqld(database).query(
+    def get_worldports_location(self, expansion):
+        results = Mysqld("alpha_world").query(
             """SELECT * FROM worldports
             WHERE map = '0' OR map = '1'""")
 
@@ -206,8 +206,8 @@ class World:
 
         return lst
 
-    def get_gameobjects_location(self, database, expansion):
-        results = Mysqld(database).query(
+    def get_gameobjects_location(self, expansion):
+        results = Mysqld("alpha_world").query(
             """SELECT sg.spawn_entry, gt.name, sg.spawn_map, sg.spawn_positionX,
             sg.spawn_positionY, sg.spawn_positionZ, sg.spawn_orientation
             FROM spawns_gameobjects sg
@@ -235,8 +235,8 @@ class World:
 
         return lst
 
-    def get_quests_location(self, database, expansion):
-        results = Mysqld(database).query(
+    def get_quests_location(self, expansion):
+        results = Mysqld("alpha_world").query(
             """SELECT
             ct.name,
             qt.Title,

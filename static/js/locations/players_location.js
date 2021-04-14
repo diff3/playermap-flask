@@ -2,9 +2,10 @@ function players_location(position) {
   $("#world").empty();
 
   for (var i = 0; i < position.length; i++) {
-    var locations = '<img src="/static/img/map/' + position[i]["faction"] + '.gif" class="player_info" id="' + i + '" onmouseover="divShow(event, \'' + position[i]['show'] + '\')" onmouseout="divHide(event,\'' + position[i]['show'] + '\')" \>'
+    var locations = '<img src="/static/img/map/' + position[i]["faction"] + '.gif" class="player_info icon" id="' + i + '" onmouseover="divShow(event, \'' + position[i]['show'] + '\')" onmouseout="divHide(event,\'' + position[i]['show'] + '\')" \>'
     $("#world").append(locations);
 
+    // more to utils?
     $("#" + i).css({
       'position': 'absolute',
       'left': position[i]['posx'],

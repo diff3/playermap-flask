@@ -1,8 +1,7 @@
-var position, socket;
-
 $(document).ready(function() {
   console.log("ready");
-  socket = io.connect('http://' + document.domain + ':' + location.port + '/playermap');
+
+  var socket = io.connect('http://' + document.domain + ':' + location.port + '/playermap');
 
   // creatures
   $('#get_creatures_button').on('click', function() {
@@ -10,7 +9,7 @@ $(document).ready(function() {
   });
 
   socket.on('updated_creatures_location', function(data) {
-    creatures_location(data)
+    creatures_location(data);
   });
 
   // gameobject
@@ -24,7 +23,7 @@ $(document).ready(function() {
 
   // online
   socket.on('players_online', function(online) {
-    $("#players_online").text(online + " online")
+    $("#players_online").text(online + " online");
   });
 
   // player
@@ -42,7 +41,7 @@ $(document).ready(function() {
   })
 
   socket.on('updated_quests_location', function(data) {
-    quests_location(data)
+    quests_location(data);
   });
 
   // taxi
@@ -60,6 +59,17 @@ $(document).ready(function() {
   });
 
   socket.on('updated_worldports_location', function(data) {
-    worldports_location(data)
+    worldports_location(data);
+  });
+
+  // expansion
+  $('#expansion').change(function(){
+     socket.emit('request_expansion_change', $(this).val());
+  });
+
+  socket.on('updated_expansion', function(expansion) {
+    $("#world").css({
+      "background-image": "url('"+expansion['logofile']+"'), url('"+expansion['mapfile']+"')"
+    });
   });
 });

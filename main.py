@@ -38,12 +38,20 @@ def index():
                            title=opac['title'],
                            admin=opac['admin'],
                            map=expansion['mapfile'],
-                           logo=expansion['logofile'])
+                           logo=expansion['logofile'],
+                           expansion=webapp['expansion'])
 
 
 @socketio.on('connect', namespace=webapp['namespace'])
 def playermap_connect():
     global thread, thread_players_online
+    socketio.emit('updated_players_location',
+                  Realm().get_players_location(expansion),
+                  namespace=webapp['namespace'])
+
+    socketio.emit('players_online',
+                  Realm().get_players_online(expansion),
+                  namespace=webapp['namespace'])
 
     if not thread.is_alive():
         print("Starting Thread")
@@ -60,27 +68,18 @@ def disconnect():
 
 
 def players_locations():
-    socketio.emit('updated_players_location',
-                  Realm().get_players_location("alpha_realm", expansion),
-                  # Realm().get_players_in_zone("alpha_realm", expansion),
-                  namespace=webapp['namespace'])
-
     while not thread_stop_event.isSet():
         socketio.emit('updated_players_location',
-                      Realm().get_players_location("alpha_realm", expansion),
+                      Realm().get_players_location(expansion),
                       namespace=webapp['namespace'])
 
         socketio.sleep(int(webapp['timer']))
 
 
 def players_online():
-    socketio.emit('players_online',
-                  Realm().get_players_online("alpha_realm", expansion),
-                  namespace=webapp['namespace'])
-
     while not thread_players_online_stop_event.isSet():
         socketio.emit('players_online',
-                      Realm().get_players_online("alpha_realm", expansion),
+                      Realm().get_players_online(expansion),
                       namespace=webapp['namespace'])
 
         socketio.sleep(int(webapp['timer']))
@@ -90,7 +89,7 @@ def players_online():
 def creatures_location(message):
     thread_stop_event.set()
     socketio.emit('updated_creatures_location',
-                  World().get_creatures_location("alpha_world", expansion),
+                  World().get_creatures_location(expansion),
                   namespace=webapp['namespace'])
 
 
@@ -98,7 +97,7 @@ def creatures_location(message):
 def gameobjects_location(message):
     thread_stop_event.set()
     socketio.emit('updated_gameobjects_location',
-                  World().get_gameobjects_location("alpha_world", expansion),
+                  World().get_gameobjects_location(expansion),
                   namespace=webapp['namespace'])
 
 
@@ -117,7 +116,7 @@ def players_location(message):
 def quests_location(message):
     thread_stop_event.set()
     socketio.emit('updated_quests_location',
-                  World().get_quests_location("alpha_world", expansion),
+                  World().get_quests_location(expansion),
                   namespace=webapp['namespace'])
 
 
@@ -125,7 +124,7 @@ def quests_location(message):
 def taxis_location(message):
     thread_stop_event.set()
     socketio.emit('updated_taxis_location',
-                  Dbc().get_taxis_location("alpha_dbc", expansion),
+                  Dbc().get_taxis_location(expansion),
                   namespace=webapp['namespace'])
 
 
@@ -133,7 +132,7 @@ def taxis_location(message):
 def get_worldports_location(message):
     thread_stop_event.set()
     socketio.emit('updated_worldports_location',
-                  World().get_worldports_location("alpha_world", expansion),
+                  World().get_worldports_location(expansion),
                   namespace=webapp['namespace'])
 
 
@@ -141,8 +140,24 @@ def get_worldports_location(message):
 def players_in_zone(message):
     thread_stop_event.set()
     socketio.emit('players_in_zone',
-                  World().get_players_in_zone("alpha_world", expansion),
+                  World().get_players_in_zone(expansion),
                   namespace=webapp['namespace'])
+
+
+@socketio.on('request_expansion_change', namespace=webapp['namespace'])
+def request_expansion_change(value):
+    global thread_stop_event, thread_players_online_stop_event, expansion
+
+    expansion = dict(config.items(value))
+
+    # sync updates
+    thread_stop_event.clear()
+    thread_players_online_stop_event.set()
+    thread_players_online_stop_event.clear()
+    playermap_connect()
+
+    socketio.emit('updated_expansion',
+                  expansion, namespace=webapp['namespace'])
 
 
 if __name__ == '__main__':

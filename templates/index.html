@@ -36,6 +36,14 @@
   <div id="menu" class="wow-popup">
     <div class="title">Menu</title>
     </div>
+    <select name="expansion" id="expansion">
+      <option value="0.5.3">Alpha 0.5.3</option>
+      <option value="1.12.x">Classic 1.12.x</option>
+      <option value="2.4.3">TBC 2.4.3</option>
+      <option value="3.3.5a">Wotlk 3.3.5a</option>
+      <option value="dun_morogh">Dun Morogh</option>
+    </select>
+
     <button id="get_creatures_button" type="button">Creatures</button><br />
     <button id="get_gameobjects_button" type="button">Game objects</button><br />
     <button id="get_players_button" type="button">Players</button><br />
@@ -46,7 +54,8 @@
   {% endif %}
 
   <div id="creature_info_popup" class="wow-popup popup">
-    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span>
+    </div>
     <div class="row"><span id="spawnid" class="shadow"></span></div>
     <div class="row"><span id="posx" class="shadow"></span></div>
     <div class="row"><span id="posy" class="shadow"></span></div>
@@ -56,7 +65,8 @@
   </div>
 
   <div id="gameobject_info_popup" class="wow-popup popup">
-    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span>
+    </div>
     <div class="row"><span id="spawnid" class="shadow"></span></div>
     <div class="row"><span id="posx" class="shadow"></span></div>
     <div class="row"><span id="posy" class="shadow"></span></div>
@@ -72,7 +82,8 @@
   </div>
 
   <div id="quest_info_popup" class="wow-popup popup">
-    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span>
+    </div>
     <div class="row"><span id="quest_title" class="shadow"></span></div>
     <div class="row"><span id="posx" class="shadow"></span></div>
     <div class="row"><span id="posy" class="shadow"></span></div>
@@ -84,14 +95,16 @@
   </div>
 
   <div id="taxi_info_popup" class="wow-popup popup">
-    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span>
+    </div>
     <div class="row"><span id="spawnid" class="shadow"></span></div>
     <div class="row"><span id="posx" class="shadow"></span></div>
     <div class="row"><span id="posy" class="shadow"></span></div>
   </div>
 
   <div id="worldport_info_popup" class="wow-popup popup">
-    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span></div>
+    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span>
+    </div>
     <div class="row"><span id="spawnid" class="shadow"></span></div>
     <div class="row"><span id="posx" class="shadow"></span></div>
     <div class="row"><span id="posy" class="shadow"></span></div>
@@ -101,6 +114,8 @@
     $("#world").css({
       "background-image": "url('{{ logo }}'), url('{{ map }}')"
     });
+
+    // $("#expansion select").val({{ expansion }});
   </script>
 </body>
 
