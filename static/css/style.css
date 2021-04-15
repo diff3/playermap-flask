@@ -9,9 +9,10 @@ body {
 
 #world {
   position: absolute;
-  left:50%;
+  left: 50%;
   margin-left: -483px;
-  height: 732px;
+  height: auto;
+  min-height: 800px;
   width: 966px;
   background-position: center top, left top;
   background-repeat: no-repeat;
@@ -28,6 +29,14 @@ body {
   vertical-align: middle;
   padding-top: 4px;
   z-index: 11;
+}
+
+.icon {
+  position: absolute;
+  height: 7px;
+  width: 7px;
+  border: 0px;
+  z-index: 100;
 }
 
 .wow-popup {
@@ -50,24 +59,19 @@ body {
   min-height: 40px;
 }
 
-#player_info_popup {
-
-}
+#player_info_popup {}
 
 #quest_info_popup {
   min-height: 75px;
 }
 
-#information {
-  position: absolute;
-  display: none;
+#creatures_info_popup {}
+
+.image {
   width: auto;
-  min-width: 150px;
-  height: auto;
-  min-height: 75px;
+  max-width: 200px;
+  min-width: 0;
 }
-
-
 
 #menu {
   position: relative;
@@ -85,14 +89,6 @@ button, select {
 
 .center {
   margin: 0 auto;
-}
-
-.icon {
-  position: absolute;
-  height: 7px;
-  width: 7px;
-  border: 0px;
-  z-index: 100;
 }
 
 .title {
@@ -115,10 +111,4 @@ button, select {
 
 .left_padding {
   padding-left: 5px;
-}
-
-.image {
-  width: auto;
-  max-width: 200px;
-  min-width: 0;
 }

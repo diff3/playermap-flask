@@ -12,7 +12,7 @@ from threading import Thread, Event
 __author__ = 'entropy'
 
 config = configparser.ConfigParser()
-config.read('config.conf')
+config.read('etc/config/config.conf')
 
 opac = dict(config.items('OPAC'))
 webapp = dict(config.items('WEBAPP'))

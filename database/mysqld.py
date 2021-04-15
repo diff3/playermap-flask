@@ -8,7 +8,7 @@ from mysql.connector import connect, Error  # noqa
 __author__ = 'entropy'
 
 config = configparser.ConfigParser()
-config.read('config.conf')
+config.read('etc/config/config.conf')
 
 db = dict(config.items('DATABASE'))
 
