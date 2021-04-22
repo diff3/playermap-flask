@@ -2,17 +2,24 @@
 # -*- coding: utf-8 -*-
 
 import configparser
-from database.queryHandler import World, Realm, Dbc
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit  # noqa
+import os
+import sys
 from time import sleep  # noqa
 from threading import Thread, Event
 
+path = os.path.dirname(__file__)
+sys.path.append(path)
+from database import World, Realm, Dbc # noqa
 
 __author__ = 'entropy'
 
+
+cfile = os.path.join(path, 'etc/config/config.conf')
+
 config = configparser.ConfigParser()
-config.read('etc/config/config.conf')
+config.read(cfile)
 
 opac = dict(config.items('OPAC'))
 webapp = dict(config.items('WEBAPP'))
@@ -161,4 +168,4 @@ def request_expansion_change(value):
 
 
 if __name__ == '__main__':
-    socketio.run(app, host=webapp['host'], port=webapp['port'])
+    socketio.run(app)

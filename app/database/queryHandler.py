@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from utils.calculations import Azeroth
-from database.mysqld import Mysqld
+from utils import Azeroth
+from database import Mysqld
+
+# import app.database
+# import utils
 
 allience = [1, 3, 4, 7]
 

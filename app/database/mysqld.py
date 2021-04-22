@@ -3,12 +3,17 @@
 
 import configparser
 from mysql.connector import connect, Error  # noqa
-
+import os
 
 __author__ = 'entropy'
 
+path = os.path.dirname(__file__)
+parent = os.path.join(path, os.pardir)
+apath = os.path.abspath(parent)
+cfile = os.path.join(apath, 'etc/config/config.conf')
+
 config = configparser.ConfigParser()
-config.read('etc/config/config.conf')
+config.read(cfile)
 
 db = dict(config.items('DATABASE'))
 

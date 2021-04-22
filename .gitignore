@@ -5,3 +5,4 @@ config.conf
 __pycache__
 test.py
 todo
+virtualenv
