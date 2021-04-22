@@ -4,9 +4,6 @@
 from utils import Azeroth
 from database import Mysqld
 
-# import app.database
-# import utils
-
 allience = [1, 3, 4, 7]
 
 
