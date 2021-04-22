@@ -12,7 +12,7 @@ class Dbc:
         pass
 
     def get_taxis_location(self, expansion):
-        results = Mysqld("world_dbc").query(
+        results = Mysqld("alpha_dbc").query(
             """SELECT * FROM TaxiNodes
             WHERE ContinentID = '0' OR ContinentID = '1'""")
 
