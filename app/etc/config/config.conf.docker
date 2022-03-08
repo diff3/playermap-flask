@@ -12,7 +12,7 @@ title=Online playermap
 
 [WEBAPP]
 debug=True
-host=localhost
+host=0.0.0.0
 namespace=/playermap
 port=5000
 secret_key=secret!
