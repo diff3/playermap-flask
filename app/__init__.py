@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+__author__ = 'entropy'
+
 import configparser
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit  # noqa
@@ -12,8 +14,6 @@ from threading import Thread, Event
 path = os.path.dirname(__file__)
 sys.path.append(path)
 from database import World, Realm, Dbc # noqa
-
-__author__ = 'entropy'
 
 
 cfile = os.path.join(path, 'etc/config/config.conf')
