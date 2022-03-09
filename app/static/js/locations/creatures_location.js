@@ -25,7 +25,8 @@ function creatures_location(position) {
   $('#world').on('mouseover', ".creature_info", function() {
     ID = $(this).attr('id');
     $("#creature_info_popup .row .title #name").text($("#" + ID).data("data-name"));
-    $("#creature_info_popup .row #spawnid").text("display_id1: " + $("#" + ID).data("data-id"));
+    $("#creature_info_popup .row #spawnid").text("spawnid: " + $("#" + ID).data("data-id"));
+    $("#creature_info_popup .row #display_id1").text("display_id1: " + $("#" + ID).data("data-image"));
     $("#creature_info_popup .row #posx").text("posx: " + $("#" + ID).data("data-posx"));
     $("#creature_info_popup .row #posy").text("posy: " + $("#" + ID).data("data-posy"));
     $("#creature_info_popup .row #posz").text("posz: " + $("#" + ID).data("data-posz"));
