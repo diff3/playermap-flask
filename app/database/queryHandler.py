@@ -157,10 +157,9 @@ class World:
                FROM
                 spawns_creatures as sc, creature_template as ct
                WHERE
-                sc.map = '0' AND sc.ignored= '0' AND sc.spawn_entry1 = ct.entry
-               OR
-                sc.map = '0' AND sc.ignored = '0' AND
-                sc.spawn_entry1 = ct.entry""")
+                sc.ignored= '0' AND sc.spawn_entry1 = ct.entry
+                -- AND ct.display_id1 IN(SELECT id FROM alpha_dbc.CreatureDisplayInfo)
+               """)
 
         lst = list()
 

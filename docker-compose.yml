@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  playermap:
+    image: playermap:latest
+    container_name: playermap
+    build: .
+    hostname: playermap
+    tty: true
+    volumes:
+      - ./app:/opt/playermap-flask
+    ports:
+      - 5000:5000
+    restart: on-failure
+
+networks:
+  default:
+    name: alpha-core-network
