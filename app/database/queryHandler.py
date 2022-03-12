@@ -249,19 +249,14 @@ class World:
             sc.map
             FROM
             alpha_world.spawns_creatures as sc,
-            alpha_world.creature_questrelation as cq,
+            alpha_world.creature_quest_starter as cq,
             alpha_world.creature_template as ct,
             alpha_world.quest_template as qt
             WHERE
             cq.entry = ct.entry AND
             cq.quest = qt.entry AND
             ct.entry = sc.spawn_entry1 AND
-            sc.map = '0' AND
-            sc.position_x < -4500 AND
-            sc.position_x > -6400 AND
-            sc.position_y > -2480 AND
-            sc.position_y < 700 AND
-            qt.ignored = '0'"""
+          	qt.ignored = '0'"""
         )
 
         lst = list()
