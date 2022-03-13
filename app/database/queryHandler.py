@@ -5,7 +5,16 @@ from utils import Azeroth
 from database import Mysqld
 
 allience = [1, 3, 4, 7]
+zone = {
+    'dun_morogh': {'min_x':-4500, 'max_x':-6400, 'min_y':700, 'max_y':-2480}
+}
 
+
+
+        #    sc.position_x < -4500 AND
+        #    sc.position_x > -6400 AND
+        #    sc.position_y > -2480 AND
+        #    sc.position_y < 700 AND
 
 class Dbc:
     def __init__(self):
@@ -14,7 +23,7 @@ class Dbc:
     def get_taxis_location(self, expansion):
         results = Mysqld("alpha_dbc").query(
             """SELECT * FROM TaxiNodes
-            WHERE ContinentID = '0' OR ContinentID = '1'""")
+            WHERE ContinentID IN ('0', '1')""")
 
         lst = list()
 
@@ -42,8 +51,8 @@ class Realm:
     def get_players_location(self, expansion):
         results = Mysqld("alpha_realm").query(
             """SELECT * FROM characters
-            WHERE map = '0' AND online='1'
-            OR map = '1' AND online = '1'""")
+            WHERE map IN ('0', '1') AND
+            online='1'""")
 
         lst = list()
 
@@ -150,17 +159,26 @@ class World:
         pass
 
     def get_creatures_location(self, expansion):
-        results = Mysqld("alpha_world").query(
-            """SELECT
-                sc.spawn_id, ct.name, sc.position_x, sc.position_y,
-                sc.position_z, sc.orientation, sc.map, ct.display_id1
-               FROM
-                spawns_creatures as sc, creature_template as ct
-               WHERE
-                sc.ignored= '0' AND sc.spawn_entry1 = ct.entry
-                AND sc.map IN ('0', '1')
-                -- AND ct.display_id1 IN(SELECT id FROM alpha_dbc.CreatureDisplayInfo)
-               """)
+
+        sql = """SELECT
+            sc.spawn_id, ct.name, sc.position_x, sc.position_y,
+            sc.position_z, sc.orientation, sc.map, ct.display_id1
+           FROM
+            spawns_creatures as sc, creature_template as ct
+           WHERE
+            sc.ignored= '0' AND sc.spawn_entry1 = ct.entry
+            AND sc.map IN ('0', '1')
+            -- AND ct.display_id1 IN(SELECT id FROM alpha_dbc.CreatureDisplayInfo)
+           """
+
+        if expansion['name'] == 'dun_morogh':
+           sql += """ AND sc.position_x < -4500 AND
+           sc.position_x > -6400 AND
+           sc.position_y > -2480 AND
+           sc.position_y < 700"""
+
+
+        results = Mysqld("alpha_world").query(sql)
 
         lst = list()
 
@@ -207,13 +225,21 @@ class World:
         return lst
 
     def get_gameobjects_location(self, expansion):
-        results = Mysqld("alpha_world").query(
-            """SELECT sg.spawn_entry, gt.name, sg.spawn_map, sg.spawn_positionX,
-            sg.spawn_positionY, sg.spawn_positionZ, sg.spawn_orientation
-            FROM spawns_gameobjects sg
-            JOIN gameobject_template gt ON gt.entry = sg.spawn_id
-            WHERE sg.spawn_map = '0' AND sg.ignored='0'
-            OR sg.spawn_map = '1' AND sg.ignored='0'""")
+
+        sql = """SELECT sg.spawn_entry, gt.name, sg.spawn_map, sg.spawn_positionX,
+        sg.spawn_positionY, sg.spawn_positionZ, sg.spawn_orientation
+        FROM spawns_gameobjects sg
+        JOIN gameobject_template gt ON gt.entry = sg.spawn_id
+        WHERE sg.spawn_map IN('0', '1') AND sg.ignored='0'"""
+
+        if expansion['name'] == 'dun_morogh':
+            sql += """ AND sg.spawn_positionX < -4500 AND
+            sg.spawn_positionX > -6400 AND
+            sg.spawn_positionY > -2480 AND
+            sg.spawn_positionY < 700"""
+
+
+        results = Mysqld("alpha_world").query(sql)
 
         lst = list()
 
@@ -236,31 +262,39 @@ class World:
         return lst
 
     def get_quests_location(self, expansion):
-        results = Mysqld("alpha_world").query(
-            """SELECT
-            ct.name,
-            qt.Title,
-            qt.Details,
-            qt.Objectives,
-            qt.PrevQuestId,
-            qt.NextQuestId,
-            sc.position_x,
-            sc.position_y,
-            sc.position_z,
-            sc.map
-            FROM
-            alpha_world.spawns_creatures as sc,
-            alpha_world.creature_quest_starter as cq,
-            alpha_world.creature_template as ct,
-            alpha_world.quest_template as qt
-            WHERE
-            cq.entry = ct.entry AND
-            cq.quest = qt.entry AND
-            ct.entry = sc.spawn_entry1 AND
-          	qt.ignored = '0' AND
-            sc.map IN ('0', '1')
-            """
-        )
+
+        sql = """SELECT
+        ct.name,
+        qt.Title,
+        qt.Details,
+        qt.Objectives,
+        qt.PrevQuestId,
+        qt.NextQuestId,
+        sc.position_x,
+        sc.position_y,
+        sc.position_z,
+        sc.map
+        FROM
+        alpha_world.spawns_creatures as sc,
+        alpha_world.creature_quest_starter as cq,
+        alpha_world.creature_template as ct,
+        alpha_world.quest_template as qt
+        WHERE
+        cq.entry = ct.entry AND
+        cq.quest = qt.entry AND
+        ct.entry = sc.spawn_entry1 AND
+        qt.ignored = '0' AND
+        sc.map IN ('0', '1')
+        """
+
+        if expansion['name'] == 'dun_morogh':
+            sql += """ AND sc.position_x < -4500 AND
+            sc.position_x > -6400 AND
+            sc.position_y > -2480 AND
+            sc.position_y < 700"""
+
+
+        results = Mysqld("alpha_world").query(sql)
 
         lst = list()
 
