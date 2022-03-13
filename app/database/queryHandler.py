@@ -158,6 +158,7 @@ class World:
                 spawns_creatures as sc, creature_template as ct
                WHERE
                 sc.ignored= '0' AND sc.spawn_entry1 = ct.entry
+                AND sc.map IN ('0', '1')
                 -- AND ct.display_id1 IN(SELECT id FROM alpha_dbc.CreatureDisplayInfo)
                """)
 
@@ -256,7 +257,9 @@ class World:
             cq.entry = ct.entry AND
             cq.quest = qt.entry AND
             ct.entry = sc.spawn_entry1 AND
-          	qt.ignored = '0'"""
+          	qt.ignored = '0' AND
+            sc.map IN ('0', '1')
+            """
         )
 
         lst = list()
