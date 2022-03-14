@@ -21,9 +21,14 @@ class Dbc:
         pass
 
     def get_taxis_location(self, expansion):
-        results = Mysqld("alpha_dbc").query(
-            """SELECT * FROM TaxiNodes
-            WHERE ContinentID IN ('0', '1')""")
+        sql = "SELECT * FROM TaxiNodes"
+        
+        if expansion['name'] == 'dun_morogh':
+            sql += " WHERE ContinentID = '0'"
+        else:
+            sql += " WHERE ContinentID IN ('0','1')"
+        
+        results = Mysqld("alpha_dbc").query(sql) 
 
         lst = list()
 
@@ -167,7 +172,6 @@ class World:
             spawns_creatures as sc, creature_template as ct
            WHERE
             sc.ignored= '0' AND sc.spawn_entry1 = ct.entry
-            AND sc.map IN ('0', '1')
             -- AND ct.display_id1 IN(SELECT id FROM alpha_dbc.CreatureDisplayInfo)
            """
 
@@ -175,7 +179,11 @@ class World:
            sql += """ AND sc.position_x < -4500 AND
            sc.position_x > -6400 AND
            sc.position_y > -2480 AND
-           sc.position_y < 700"""
+           sc.position_y < 700 AND
+           sc.map = '0'"""
+        else:
+            sql += " AND sc.map IN ('0', '1')"
+
 
 
         results = Mysqld("alpha_world").query(sql)
@@ -202,10 +210,15 @@ class World:
         return lst
 
     def get_worldports_location(self, expansion):
-        results = Mysqld("alpha_world").query(
-            """SELECT * FROM worldports
-            WHERE map = '0' OR map = '1'""")
+        sql = "SELECT * FROM worldports"
 
+        if expansion['name'] == 'dun_morogh':
+            sql += " WHERE map = '0'"
+        else:
+            sql += " WHERE map IN ('0', '1')"
+        
+        results = Mysqld("alpha_world").query(sql)
+        
         lst = list()
 
         for record in results:
@@ -230,13 +243,17 @@ class World:
         sg.spawn_positionY, sg.spawn_positionZ, sg.spawn_orientation
         FROM spawns_gameobjects sg
         JOIN gameobject_template gt ON gt.entry = sg.spawn_id
-        WHERE sg.spawn_map IN('0', '1') AND sg.ignored='0'"""
+        WHERE sg.ignored='0'"""
 
         if expansion['name'] == 'dun_morogh':
             sql += """ AND sg.spawn_positionX < -4500 AND
             sg.spawn_positionX > -6400 AND
             sg.spawn_positionY > -2480 AND
-            sg.spawn_positionY < 700"""
+            sg.spawn_positionY < 700 AND
+            sg.spawn_map = '0'"""
+        else:
+            sql += " AND sg.spawn_map IN('0', '1')"
+
 
 
         results = Mysqld("alpha_world").query(sql)
@@ -283,16 +300,17 @@ class World:
         cq.entry = ct.entry AND
         cq.quest = qt.entry AND
         ct.entry = sc.spawn_entry1 AND
-        qt.ignored = '0' AND
-        sc.map IN ('0', '1')
+        qt.ignored = '0'
         """
 
         if expansion['name'] == 'dun_morogh':
             sql += """ AND sc.position_x < -4500 AND
             sc.position_x > -6400 AND
             sc.position_y > -2480 AND
-            sc.position_y < 700"""
-
+            sc.position_y < 700 AND
+            sc.map = '0'"""
+        else:
+            sql += " AND sc.map IN ('0', '1')"
 
         results = Mysqld("alpha_world").query(sql)
 

@@ -49,14 +49,16 @@ $(document).ready(function() {
 	var posX = e.pageX;
 	var posY = e.pageY;
 
-	var polygon = [ [ posX - 10, posY - 10], [posX + 10, posY - 10], [posX + 10, posY + 10], [posX - 10, posY + 10] ]; 
+	var polygon = [ [ posX - 20, posY - 20], [posX + 20, posY - 20], [posX + 20, posY + 20], [posX - 20, posY + 20] ]; 
 	   
 	$('.quest_info').each(function(){
            x = $(this).offset().left;		
            y = $(this).offset().top;		
 
 	   if (inside([x, y], polygon)) {
-               console.log("Quest name: " + $(this).data("data-title"));
+	       var id = $(this).attr('ID');  
+               var div = document.getElementById(id);
+               console.log("element ID: " + $(div).attr('dataName'));
            }
 	});
    }); 
