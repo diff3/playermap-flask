@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM python:3.11-alpine
 
 RUN apk update && apk --no-cache add git tmux
 

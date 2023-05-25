@@ -5,6 +5,13 @@ body {
   margin-bottom: 0px;
   color: #EABA28;
   background-color: #000000;
+  width: 100%;
+  height: 100%;
+}
+
+html {
+  width: 100%;
+  height: 100%; 
 }
 
 #world {
@@ -49,6 +56,14 @@ body {
   z-index: 99999;
 }
 
+.taxi_info {
+  position: absolute;
+  height: 7px;
+  width: 7px;
+  border: 0px;
+  z-index: 100;
+}
+
 .popup {
   position: absolute;
   display: none;
@@ -74,9 +89,9 @@ body {
 }
 
 #menu {
-  position: relative;
-  top: 0px;
-  left: 0px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
   width: 110px;
   height: auto;
   z-index: 100000;
@@ -105,10 +120,42 @@ button, select {
   padding-right: 5px;
 }
 
+.row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.row span {
+  flex-grow: 1;
+}
+
 .shadow {
   text-shadow: 2px 2px rgba(0, 0, 0, 1);
 }
 
 .left_padding {
   padding-left: 5px;
+}
+
+#subTitle {
+
+}
+
+#notes {
+  
+}
+
+.centered-div {
+  position: absolute;
+  top: 70px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100000;
+}
+
+.centered-div img {
+  display: block;
+  width: 300px; 
+  height: 160px;
 }

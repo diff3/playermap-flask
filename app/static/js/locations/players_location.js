@@ -48,14 +48,14 @@ function player_pos(positions) {
 }
 
 function players_location(position) {
-  $("#world").empty();
+  $("#world_objects").empty();
 
   for (var i = 0; i < position.length; i++) {
     var locations = '<img src="/static/img/map/' + position[i]["faction"] + '.gif" class="player_info icon" id="' + i + '" onmouseover="divShow(event, \'' + position[i]['show'] + '\')" onmouseout="divHide(event,\'' + position[i]['show'] + '\')" \>'
     var locations2 = '<img src="/static/img/map/group-icon.gif" class="player_info icon" id="a' + i + '" onmouseover="divShow(event, \'' + position[i]['show'] + '\')" onmouseout="divHide(event,\'' + position[i]['show'] + '\')" \>'
 
-    $("#world").append(locations);
-    $("#world").append(locations2);
+    $("#world_objects").append(locations);
+    $("#world_objects").append(locations2);
 
     // more to utils?
     $("#" + i).css({
@@ -75,7 +75,7 @@ function players_location(position) {
   }
 
   // show info next to cursor
-  $('#world').on('mouseover', ".player_info", function(event) {
+  $('#world_objects').on('mouseover', ".player_info", function(event) {
     ID = $(this).attr('id');
 
     $("#player_info_popup .row .title #name").text($("#" + ID).data("data-name"));

@@ -1,0 +1,229 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from libraries.utils.Logger import Logger
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
+from libraries.databases import WorldModels
+
+host="localhost"
+user="root"
+password="pwd"
+database="alpha_world"
+
+world_db_engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{database}?charset=utf8mb4', pool_pre_ping=True)
+SessionHolder = scoped_session(sessionmaker(bind=world_db_engine, autocommit=False, autoflush=True))
+
+mapLeftPoint = 4267.765836313618
+mapTopPoint = 4657.975130879346
+mapWidth = 10568.022008253096
+mapHeight = 19980.94603271984
+
+imageWidth = 345
+imageHeight = 650
+
+
+class WorldDatabaseManager:
+
+    @staticmethod
+    def SpawnGameObjects(ignored, map_id):
+        world_db_session = SessionHolder()
+        
+        count = int(0)
+        lst = dict()
+
+        records = world_db_session.query(
+            WorldModels.SpawnsGameobjects, WorldModels.GameobjectTemplate
+        ).with_entities(
+            WorldModels.SpawnsGameobjects.spawn_id,
+            WorldModels.SpawnsGameobjects.spawn_map,
+            WorldModels.SpawnsGameobjects.spawn_positionX,
+            WorldModels.SpawnsGameobjects.spawn_positionY,
+            WorldModels.SpawnsGameobjects.spawn_positionZ,
+            WorldModels.SpawnsGameobjects.ignored,
+            WorldModels.GameobjectTemplate.name,
+            WorldModels.SpawnsGameobjects.spawn_entry
+        ).filter(
+            WorldModels.SpawnsGameobjects.ignored == ignored,
+            WorldModels.SpawnsGameobjects.spawn_map == map_id,
+            WorldModels.GameobjectTemplate.entry == WorldModels.SpawnsGameobjects.spawn_entry
+        ).all()
+
+        length = len(records)
+
+        for record in records:
+            d = {
+                'id': record.spawn_id,
+                'x': record.spawn_positionX,
+                'y': record.spawn_positionY,
+                'z': record.spawn_positionZ,
+                'map': record.spawn_map,
+                'name': record.name,
+                'entry': record.spawn_entry,
+                'class_name': 'objects'
+            }
+
+            lst[record.spawn_id] = d
+
+            count += 1
+            Logger.progress('SpawnGameObjects loading ...', count, length)
+
+        world_db_session.close()
+
+        return lst
+
+    @staticmethod
+    def SpawnCreatures(map_id, is_ignored):
+        """
+        Retrieves a dictionary of spawn creatures from the database for a given map_id and ignored flag.
+        :param map_id: The ID of the map to retrieve the creatures from.
+        :type map_id: int
+        :param is_ignored: Flag to indicate if the creature should be ignored or not.
+        :type is_ignored: bool
+        :return: A dictionary of creatures and their spawn information.
+        :rtype: dict
+        """
+        world_db_session = SessionHolder()
+
+        count = int(0)
+        lst = dict()
+
+        records = world_db_session.query(
+                WorldModels.SpawnsCreatures, WorldModels.CreatureTemplate 
+               ).with_entities(
+                WorldModels.SpawnsCreatures.spawn_id,
+                WorldModels.SpawnsCreatures.position_x,
+                WorldModels.SpawnsCreatures.position_y,
+                WorldModels.SpawnsCreatures.position_z,
+                WorldModels.SpawnsCreatures.orientation,
+                WorldModels.CreatureTemplate.name,
+                WorldModels.CreatureTemplate.display_id1,
+                WorldModels.SpawnsCreatures.spawn_entry1, 
+                WorldModels.SpawnsCreatures.map 
+            ).filter(
+                WorldModels.SpawnsCreatures.map == map_id,
+                WorldModels.SpawnsCreatures.ignored == is_ignored,
+                WorldModels.SpawnsCreatures.spawn_entry1 ==  WorldModels.CreatureTemplate.entry
+            ).all()
+       
+        
+        length = len(records)
+
+        for record in records:
+            
+            d = {
+                'id': record.spawn_id,
+                'entry': record.spawn_entry1,
+                'x': record.position_x,
+                'y': record.position_y,
+                'z': record.position_z,
+                'orientation': record.orientation,
+                'name': record.name,
+                'display_id': record.display_id1,
+                'class_name': 'creature'
+            }
+
+            lst[record.spawn_id] = d
+        
+            count += 1
+            Logger.progress('SpawnCreatures loading ...', count, length)
+
+        world_db_session.close()
+
+        return lst
+
+    @staticmethod
+    def WorldPorts(map_id):
+        world_db_session = SessionHolder()
+
+        count = int(0)
+        lst = dict()
+
+        records = world_db_session.query (
+            WorldModels.Worldports
+        ).filter(
+            WorldModels.Worldports.map == map_id
+        ).all()
+
+        length = len(records)
+    
+        for record in records:
+            d = dict()
+            
+            for key in record.__dict__.keys():
+                if key != '_sa_instance_state':
+                    d[key] = getattr(record, key)
+            
+            d['id'] = record.entry
+            d['class_name'] = 'worldport'
+
+            lst[record.entry] = d
+        
+            count += 1
+            Logger.progress('WorldPort loading ...', count, length)
+
+        world_db_session.close()
+        
+        return lst 
+
+
+    @staticmethod
+    def get_quests_location(map_id, is_ignored):
+        world_db_session = SessionHolder()
+
+        count = int(0)
+        lst = dict()
+
+        records = world_db_session.query(
+            WorldModels.CreatureTemplate.name,
+            WorldModels.QuestTemplate.Title,
+            WorldModels.QuestTemplate.Details,
+            WorldModels.QuestTemplate.Objectives,
+            WorldModels.QuestTemplate.PrevQuestId,
+            WorldModels.QuestTemplate.NextQuestId,
+            WorldModels.SpawnsCreatures.position_x,
+            WorldModels.SpawnsCreatures.position_y,
+            WorldModels.SpawnsCreatures.position_z,
+            WorldModels.SpawnsCreatures.map,
+            WorldModels.QuestTemplate.entry
+        ).select_from(
+            WorldModels.SpawnsCreatures,
+            WorldModels.CreatureTemplate,
+            WorldModels.QuestTemplate
+        ).where(
+            WorldModels.CreatureTemplate.entry == WorldModels.QuestTemplate.entry,
+            WorldModels.CreatureTemplate.entry == WorldModels.SpawnsCreatures.spawn_entry1,
+            WorldModels.QuestTemplate.ignored == is_ignored
+        ).all()
+
+        length = len(records)
+
+        for record in records:
+            d = {
+                'id': record.entry,
+                'name': record.name,
+                'title': record.Title,
+                'details': record.Details,
+                'objectives': record.Objectives,
+                'prev_quest_id': record.PrevQuestId,
+                'next_quest_id': record.NextQuestId,
+                'x': record.position_x,
+                'y': record.position_y,
+                'z': record.position_z,
+                'map': record.map,
+                'quest': record.entry,
+                'class_name': 'quest'
+            }
+
+            lst[record.entry] = d
+
+            count += 1
+            Logger.progress('QuestStartLocation loading ...', count, length)
+
+        world_db_session.close()
+        
+        return lst 
+
+
+if __name__ == '__main__':
+    pass

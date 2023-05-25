@@ -6,72 +6,49 @@
 <head>
   <title>{{ title }}</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <link rel=”icon” type=“image/x-icon” href="favicon.ico" />
+  <link rel="shortcut icon" href="/static/favicon.png">
 
   <!-- https://jquery.com/download/ -->
-  <script src="/static/js/jquery-3.6.0.min.js"></script>
+  <script src="/static/js/jquery-3.6.4.js"></script>
 
   <!-- https://github.com/socketio/socket.io/releases -->
-  <script src="/static/js/socket.io.min.js"></script>
+  <script src="/static/js/socket.io.js"></script>
 
-  <script src="/static/js/utils/popup.js"></script>
-  <script src="/static/js/locations/creatures_location.js"></script>
-  <script src="/static/js/locations/gameobjects_location.js"></script>
+  <script src="/static/js/locations.js"></script>
   <script src="/static/js/locations/players_location.js"></script>
-  <script src="/static/js/locations/quests_location.js"></script>
-  <script src="/static/js/locations/taxis_location.js"></script>
-  <script src="/static/js/locations/worldports_location.js"></script>
   <script src="/static/js/playermap.js"></script>
 
   <!-- https://html5boilerplate.com -->
-  <link rel="stylesheet" href="/static/css/normal.css" />
-  <link rel="stylesheet" href="/static/css/style.css" />
-</head>
+ 
+  <!-- <link rel="stylesheet" href="/static/css/styles.css"/> -->
+  <link rel="stylesheet" href="/static/css/style.css"/> 
+  <link rel="stylesheet" href="/static/css/styles.css"/> 
+  <link rel="stylesheet" href="/static/css/normalize.css"/>
 
-<body>
-  <div id="world" class="center"></div>
-  <div id="players_online" class="wow-popup center"></div>
+  <link rel="stylesheet" href="/static/css/fontawesome/fontawesome.css?v=1664325254">
+  <link rel="stylesheet" href="/static/css/fontawesome/brands.css?v=1664325254">
+  <link rel="stylesheet" href="/static/css/fontawesome/solid.css?v=1664325254">
+</head>
 
   {% if admin == "True" %}
   <div id="menu" class="wow-popup">
     <div class="title">Menu</title>
     </div>
-    <select name="expansion" id="expansion">
-      <option value="0.5.3">Alpha 0.5.3</option>
-      <option value="3.3.5a">Wotlk 3.3.5a</option>
-      <option value="dun_morogh">Dun Morogh</option>
-    </select>
-
-    <button id="get_creatures_button" type="button">Creatures</button><br />
-    <button id="get_gameobjects_button" type="button">Game objects</button><br />
+    <button class="button" id="get_creatures_button" type="button">Creatures</button><br />
+    <button class="button" id="get_gameobjects_button" type="button">Game objects</button><br />
     <button id="get_players_button" type="button">Players</button><br />
-    <button id="get_taxis_button" type="button">Taxi nodes</button><br />
-    <button id="get_worldports_button" type="button">Worldport</button><br />
-    <button id="get_quests_button" type="button">Questgivers</button><br />
+    <button class="button" id="get_taxis_button" type="button">Taxi nodes</button><br />
+    <button class="button" id="get_worldports_button" type="button">Worldport</button><br />
+    <button class="button" id="get_quests_button" type="button">Questgivers</button><br />
   </div>
   {% endif %}
 
-  <div id="creature_info_popup" class="wow-popup popup">
-    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span>
-    </div>
-    <div class="row"><span id="spawnid" class="shadow"></span></div>
-    <div class="row"><span id="display_id1" class="shadow"></span></div>
-    <div class="row"><span id="posx" class="shadow"></span></div>
-    <div class="row"><span id="posy" class="shadow"></span></div>
-    <div class="row"><span id="posz" class="shadow"></span></div>
-    <div class="row"><span id="orientation" class="shadow"></span></div>
-    <div id="image"></div>
+  <div id="info_popup" class="wow-popup popup">
+    <div class="row"><span id="title" class="shadow title"></span></div>
+    <div class="row"><span id="subTitle" class="shadow"></span></div>
+    <div class="row"><span id="notes" class="shadow"></span></div>
   </div>
 
-  <div id="gameobject_info_popup" class="wow-popup popup">
-    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span>
-    </div>
-    <div class="row"><span id="spawnid" class="shadow"></span></div>
-    <div class="row"><span id="posx" class="shadow"></span></div>
-    <div class="row"><span id="posy" class="shadow"></span></div>
-    <div class="row"><span id="posz" class="shadow"></span></div>
-    <div class="row"><span id="orientation" class="shadow"></span></div>
-  </div>
 
   <div id="player_info_popup" class="wow-popup popup">
     <div class="row"><span class="title"><span id="name" class="shadow"></span></span></div>
@@ -79,43 +56,185 @@
     <div class="row"><span id="level" class="shadow"></span><span id="faction"><img src="" /></span><span id="race"><img src="" /></span><span id="class"><img src="" /></span></div>
     <div class="row"><span id="zone" class="shadow"></span></div>
   </div>
-
-  <div id="quest_info_popup" class="wow-popup popup">
-    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span>
-    </div>
-    <div class="row"><span id="quest_title" class="shadow"></span></div>
-    <div class="row"><span id="posx" class="shadow"></span></div>
-    <div class="row"><span id="posy" class="shadow"></span></div>
-    <div class="row"><span id="posz" class="shadow"></span></div>
-    <div class="row"><span id="details" class="shadow"></span></div>
-    <div class="row"><span id="objectives" class="shadow"></span></div>
-    <div class="row"><span id="prevquestid" class="shadow"></span></div>
-    <div class="row"><span id="nextquestid" class="shadow"></span></div>
+  <div class="centered-div">
+    <img src="/static/img/logos/wowlogo.png" alt="Your Image">
   </div>
+<aside class="caroussel" id="spawn-map-caroussel">
+    <!-- <button onclick="resizeCaroussel(event)" class="caroussel__button-enlarge" title="Expand/contract map">
+    <i class="fas fa-angles-left"></i>
+    </button> -->
 
-  <div id="taxi_info_popup" class="wow-popup popup">
-    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span>
+  <!-- MAP UI -->
+  <div id="spawn-map-user-interface">
+    <!-- HIGHLIGTHER  -->
+    <div class="map-highlighter" id="spawn-map-highlighter" style="display: none; top: 357.103px; left: 129.015px;"></div>
+   <!-- END HIGHLIGHTER -->
+
+
+    <!-- HELP-BOX -->
+
+    <!--
+    <div class='help-box' id='spawn-map-help-box'>
+      <i class='fas fa-computer-mouse help-box__info-icon'></i>
+      <span class='help-box__content'> drag and zoom </span>
     </div>
-    <div class="row"><span id="spawnid" class="shadow"></span></div>
-    <div class="row"><span id="posx" class="shadow"></span></div>
-    <div class="row"><span id="posy" class="shadow"></span></div>
-  </div>
+  -->
+  
 
-  <div id="worldport_info_popup" class="wow-popup popup">
-    <div class="row"><span class="title"><span id="name" class="shadow"></span></<span>
+    <!-- END HELP BOX -->
+
+    <!-- SHORTCUTBOX -->
+    <div class="shortcut-box" id="shortcut-box">
+      <i class="fas fa-computer-mouse" id="shortcut-icon" style="opacity: 0.4;"></i>
+      <div class="shortcut-box__content">
+        <p class="shortcut-box__content__key">Click and drag</p>
+        <p class="shortcut-box__content__description">
+          Pan map (move left/right, up/down)
+        </p>
+        <p class="shortcut-box__content__key">Mouse wheel</p>
+        <p class="shortcut-box__content__description">
+          Zoom in and out
+        </p>
+        <p class="shortcut-box__content__key">Shift+Click on a spawn point</p>
+        <p class="shortcut-box__content__description">
+          Open new tab to db.thealphaproject.eu with more info
+        </p>
+       <p class="shortcut-box__content__key">Alt+Click on a spawn point</p>
+        <p class="shortcut-box__content__description">
+          Copy ".port" + "ingame location" to clipboard 
+        </p>
+        <p class="shortcut-box__content__key">Alt+Click anywhere</p>
+        <p class="shortcut-box__content__description">
+          Copy ".port" + location of mouse to clipboard 
+        </p>
+        <p class="shortcut-box__content__key">Meta+Click on worldport</p>
+        <p class="shortcut-box__content__description">
+          Copy ".tel" + "location" to clipboard 
+        </p>
+      </div>
     </div>
-    <div class="row"><span id="spawnid" class="shadow"></span></div>
-    <div class="row"><span id="posx" class="shadow"></span></div>
-    <div class="row"><span id="posy" class="shadow"></span></div>
-  </div>
+    <!-- END SHORTCUT BOX -->
+</div>  <!-- End of DIV: spawn-map-user-interface -->
 
-  <script>
-    $("#world").css({
-      "background-image": "url('{{ logo }}'), url('{{ map }}')"
-    });
+
+  <!-- SPAWN POINTS ON MAP -->
+
+<div class="caroussel__maps">
+ 
+
+  <!-- KALIMDOR -->
+
+
+  <!-- Drawing Kalimdor -->
+
+  <!-- 
+  <div class='map-container'
+  id='map-container-Kalimdor'
+  onmousedown='onMouseDownMapContainer(event)'
+  onmouseup='onMouseUpMapContainer(event)'
+  onmousemove='onMouseMoveMapContainer(event)'
+  onwheel='onMouseWheelMapContainer(event)'
+  draggable='false'
+  style='position:relative; background-color:#172e46;'
+  >
+<a
+    id='map-arrow-right'
+    class='map-container__arrow map-container__arrow--right'
+    onclick='changeMapInCaroussel(event)'
+    ><i class='fas fa-angle-right'></i
+  ></a>
+<img src='/static/maps/Kalimdor.webp'
+  style='display:block;
+  width:345px; height:650px;
+  max-width:initial;
+  max-height:initial;
+  position:absolute;
+  left:300px;
+  top:0;
+  margin:0;'
+  id='Kalimdor_map'
+  data-mapleft='5042.4865925889'
+  data-maptop='11763.324337648'
+  data-mapwidth='13100.059130778'
+  data-mapheight='24611.604572322'
+  data-mapnumber='1'
+  data-width='345'
+  data-height='650'
+  data-basename='/static/maps/Kalimdor'
+  data-extension='.webp'
+  draggable='false'
+  alt='Kalimdor map' title='Kalimdor map' >
+</div>  
+-->
+
+<!-- End of DIV: map-container -->
+
+  
+  <div class='map-container'
+        id='map-container-Eastern_Kingdoms',
+          onmousedown='onMouseDownMapContainer(event)'
+          onmouseup='onMouseUpMapContainer(event)'
+          onmousemove='onMouseMoveMapContainer(event)'
+          onwheel='onMouseWheelMapContainer(event)' 
+       
+          draggable='false'
+          style='position:relative; background-color:#172e46;'
+          >
+
+          <span id="world_objects"></span>
+          <a
+            id='map-arrow-left'
+            class='map-container__arrow map-container__arrow--left'
+            onclick='changeMapInCaroussel(event)'
+            ><i class='fas fa-angle-left'></i
+          ></a>
+          <img src='/static/img/maps/Eastern_Kingdoms_bigger.webp'
+          style='display:block;
+          width:345px; height:650px;
+          max-width:initial;
+          max-height:initial;
+          position:absolute;
+          left:300px;
+          top:0;
+          margin:0;'
+          id='Eastern_Kingdoms_map'
+          data-mapleft='4267.7658363136'
+          data-maptop='4657.9751308793'
+          data-mapwidth='10568.022008253'
+          data-mapheight='19980.94603272'
+          data-mapnumber='0'
+          data-width='345'
+          data-height='650'
+          data-basename='/static/img/maps/Eastern_Kingdoms'
+          data-extension='.webp'
+          draggable='false'
+          alt='Eastern_Kingdoms map' title='Eastern_Kingdoms map' >
+</div> 
+
+<!-- End of DIV: map-container -->
+  
+  
+  <!-- EASTERN KINGDOMS -->
+
+
+  <!-- END MAP SPAWN POINTS -->
+  </div>
+</div>  <!-- End of DIV: caroussel__maps -->
+
+
+  <!-- MAP HIGHLIGHTER -->
+</aside>
+
+
+<script src="/static/js/zoom_and_pan.js"></script>
+ <script>
+  //  $("#world").css({
+   //   "background-image": "url('{{ logo }}')"
+  //  });
 
     // $("#expansion select").val({{ expansion }});
+   
+
   </script>
 </body>
-
 </html>

@@ -1,51 +1,35 @@
+var socket;
+var saved_button 
+var popup = $('#info_popup');
+var draggable='false'
+
+window.addEventListener('beforeunload', function() {
+  var clientId = localStorage.getItem('clientId');
+  socket.emit('disconnect_event', clientId);
+});
+
 $(document).ready(function() {
-  console.log("ready");
-  var socket = io.connect('http://' + document.domain + ':' + location.port + '/playermap');
+  socket = io.connect('http://' + document.domain + ':' + location.port + '/playermap');
+  console.log("Page Loaded, with no errors");
 
-  function inside(point, vs) {
-    // ray-casting algorithm based on
-    // https://wrf.ecse.rpi.edu/Research/Short_Notes/pnpoly.html/pnpoly.html
-    
-    var x = point[0], y = point[1];
-    
-    var inside = false;
-    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
-        var xi = vs[i][0], yi = vs[i][1];
-        var xj = vs[j][0], yj = vs[j][1];
-        
-        var intersect = ((yi > y) != (yj > y))
-            && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
-        if (intersect) inside = !inside;
-    }
-    
-    return inside;
-};
+  socket.on('connected', function(clientId) {
+    console.log("Connected to server");
+    localStorage.setItem('clientId', clientId);
+  });
 
-  $('#world').click(function(e) {
-    var offset = $(this).offset();
-    var posX = e.pageX - offset.left;
-    var posY = e.pageY - offset.top;
 
-    console.log("posX: " + posX  + " posY:" + posY);
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+      .then(function() {
+        console.log("Text copied to clipboard: " + text);
+      })
+      .catch(function(error) {
+        console.error("Error copying text to clipboard:", error);
+      });
+  }
 
-    // map Dun morogh zone
-    // posX: 663 posY:376
-    // posX: 754 posY:372
-    // posX: 762 posY:418
-    // posX: 659 posY:450
-    // posX: 700 posY:396
   
-    var polygon = [ [ 663, 376 ], [ 754, 372 ], [ 762, 418 ], [718, 426], [ 659, 450 ] ];
-    if (inside([ posX, posY ], polygon)) {
-        console.log("Mouse inside, Dun Morogh");
-        socket.emit('request_expansion_change', "dun_morogh");
-    }
-   });
-
-   $('#world').click(function(e) {
-    //	var offset = $(this).offset();
-   // 	var posX = e.pageX - offset.left;
-   // 	var posY = e.pageY - offset.top;
+  $('#world').click(function(e) {
 	var posX = e.pageX;
 	var posY = e.pageY;
 
@@ -61,27 +45,47 @@ $(document).ready(function() {
 	});
    }); 
 
-  // creatures
-  $('#get_creatures_button').on('click', function() {
-    socket.emit('request_creatures_location', 'update');
+  // Requesting update based on button id
+  $('.button').click(function() {
+      const currentImage = document.querySelector("#Eastern_Kingdoms_map");
+      saved_button = $(this).attr('id');
+
+      // console.log(currentImage);
+      var offsetLeft = currentImage.offsetLeft;
+      var offsetTop  = currentImage.offsetTop;
+      var offsetHeight = currentImage.offsetHeight;
+      var offsetWidth  = currentImage.offsetWidth;
+
+      var screenWidth = $(window).width();
+      var screenHeight = $(window).height();
+
+      data = {
+        'id': $(this).attr('id'),
+        'magnification': magnification,
+        'offsetLeft': offsetLeft,
+        'offsetTop': offsetTop,
+        'offsetHeight': offsetHeight,
+        'offsetWidth': offsetWidth,
+        'max_x': screenWidth,
+        'max_y': screenHeight
+      }
+
+      socket.emit('request_server_update', data);
   });
 
-  socket.on('updated_creatures_location', function(data) {
-    creatures_location(data);
+  // Receaving update from server
+  socket.on('receaving_update_from_server', function(data) {
+    var keys = Object.keys(data);
+    spawnSVGElements(data[keys]);
+    
+    var svgCount = $('#world_objects svg').length;
+    console.log("Number of SVGs: " + svgCount); 
   });
-
-  // gameobject
-  $('#get_gameobjects_button').on('click', function() {
-    socket.emit('request_gameobjects_location', 'update');
-  });
-
-  socket.on('updated_gameobjects_location', function(data) {
-    gameobjects_location(data);
-  });
-
+   
   // online
   socket.on('players_online', function(online) {
     $("#players_online").text(online + " online");
+    console.log("Players online: " + online);
   });
 
   // player
@@ -93,43 +97,122 @@ $(document).ready(function() {
     players_location(data);
   });
 
-  // quest
-  $('#get_quests_button').on('click', function() {
-    socket.emit('request_quests_location', 'update');
-  })
+  $(document).on('mouseenter', ".popups", function(event) {  
+  data = {
+    'id': $(this).attr('id'),
+    'class_name': $(this).attr('data-classname'),
+    'popup': 'mouseover',
+    'mouseX': event.pageX,
+    'mouseY': event.pageY
+  }
 
-  socket.on('updated_quests_location', function(data) {
-    quests_location(data);
-  });
+  socket.emit('mouse_enter_info', data);
+});  
 
-  // taxi
-  $('#get_taxis_button').on('click', function() {
-    socket.emit('request_taxis_location', 'update');
-  });
 
-  socket.on('updated_taxis_location', function(data) {
-    taxis_location(data);
-  });
+$(document).on('mouseleave', ".popups", function(event) {  
+  $('#info_popup').hide();
+  $(document).off("click", '#info_popup');
+  $('#info_popup').attr('data-click_url', "no");
+});
 
-  // worldport
-  $('#get_worldports_button').on('click', function() {
-    socket.emit('request_worldports_location', 'update');
-  });
-
-  socket.on('updated_worldports_location', function(data) {
-    worldports_location(data);
-  });
-
-  // expansion
-  $('#expansion').change(function(){
-     socket.emit('request_expansion_change', $(this).val());
-  });
-
-  socket.on('updated_expansion', function(expansion) {
-    $('#expansion').val(expansion['name']);
-
-    $("#world").css({
-      "background-image": "url('"+expansion['logofile']+"'), url('"+expansion['mapfile']+"')"
+  socket.on('show_info_popups', function(data) { 
+    mouseX = data['requested_data']['mouseX']
+    mouseY = data['requested_data']['mouseY']
+  
+    $("#info_popup #title").text(data['requested_data']['name']);
+    $("#info_popup #subTitle").html(data['requested_data']['subTitle']);
+    $("#info_popup #notes").html(data['requested_data']['notes']);
+  
+    var offsetX = 10; // Adjust the horizontal offset
+    var offsetY = 10; // Adjust the vertical offset
+    
+    // Calculate the maximum allowed positions
+    var maxLeft = $(window).width() - $("#info_popup").outerWidth() - offsetX;
+    var maxTop = $(window).height() - $("#info_popup").outerHeight() - offsetY;
+    
+    // Adjust the position if it exceeds the maximum allowed positions
+    var left = Math.min(mouseX + offsetX, maxLeft);
+    var top = Math.min(mouseY + offsetY, maxTop);
+  
+    // Check if the popup is too close to the right side of the screen
+    if (left > maxLeft - offsetX) {
+      left = mouseX - offsetX - popup.outerWidth();
+    }
+    
+    // Check if the popup is too close to the bottom of the screen
+    if (top > maxTop - offsetY) {
+      top = mouseY - offsetY - popup.outerHeight();
+    }
+    
+    $("#info_popup").css({
+      top: top + "px",
+      left: left + 'px',
     });
+  
+    $('#info_popup').attr('data-click_url', data['requested_data']['url']);
+  
+    $('#info_popup').show();
   });
+  
+
+
+
+$(document).on('click', ".popups", function(event) {  
+  var x = parseFloat($(this).attr('data-x'));
+  var y = parseFloat($(this).attr('data-y'));
+  var z = parseFloat($(this).attr('data-z'));
+  var title = $(this).attr('data-name');
+  var class_name = $(this).attr('data-classname');
+  var url = $("#info_popup").attr('data-click_url');
+  var textToCopy = "";
+
+  if (event.altKey) {
+    var textToCopy = ".port " + x + " " + y + " " + z + " " + 0;
+  } 
+  else if (event.metaKey && class_name == "worldport") {
+    var textToCopy = ".tel " + title.toLowerCase();
+  } else if(event.shiftKey && url != "no" && url != undefined ) {
+    window.open(url, '_blank');
+  } else if(event.shiftKey && class_name == "taxi") {
+    url = "https://db.thealphaproject.eu/?action=show_table&table=TaxiNodes&database=alpha_dbc";
+    window.open(url, '_blank');
+  }
+
+  if (textToCopy.length > 0) {
+    copyToClipboard(textToCopy); 
+  }
+});
+$(document).on("click", "#Eastern_Kingdoms_map", function(event) {
+  event.preventDefault();
+
+  if (event.altKey) {
+    const currentImage = document.querySelector("#Eastern_Kingdoms_map");
+    var offsetX = event.offsetX;
+    var offsetY = event.offsetY;
+
+    const mapWidth = currentImage.dataset.mapwidth
+    const mapHeight = currentImage.dataset.mapheight
+    const mapLeft = currentImage.dataset.mapleft
+    const mapTop = currentImage.dataset.maptop
+  
+    const imageWidth = currentImage.dataset.width
+    const imageHeight = currentImage.dataset.height
+  
+    // how far through image is mouse assuming no magnification
+    // (image may start offscreen)
+    const mouseX = offsetX / magnification
+    const mouseY = offsetY / magnification
+  
+    // distance through map we are (from 0 to 1)
+    const xOffset = mouseX / imageWidth
+    const yOffset = mouseY / imageHeight
+  
+    const x = mapLeft - mapWidth  * xOffset
+    const y = mapTop  - mapHeight * yOffset
+
+    copyToClipboard(".port " + y + " " + x + " " + 300 + " " + 0);
+  }
+}); 
+
 });
