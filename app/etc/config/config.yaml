@@ -1,0 +1,48 @@
+app:
+    static_folder: /static
+    secret_key: secret!
+    debug: true
+    host: "0.0.0.0"
+    namespace: /playermap
+    port: 5000
+    timer: 60
+    game_version: 0.5.3
+    logger: true
+    engineio_logger: true
+
+database:
+    host: localhost
+    user: root
+    pass: pwd
+    port: 3306
+    charset: utf8mb4
+    database: None
+
+frontend:
+    admin: true
+    title: Online playermap
+
+0.5.3:
+    name: 0.5.3
+    mapfile: /static/img/map/azeroth-0.5.3.jpg
+    logofile: /static/img/wowlogo.png
+
+viewport:
+    offset: 750
+
+maps_static_data: 
+    eastern_kingdoms:
+        mapLeftPoint: 4267.765836313618
+        mapTopPoint: 4657.975130879346
+        mapWidth: 10568.022008253096
+        mapHeight: 19980.94603271984
+        imageWidth: 345
+        imageHeight: 650
+
+    kalimdor:
+        mapLeftPoint: 4267.765836313618
+        mapTopPoint: 4657.975130879346
+        mapWidth: 10568.022008253096
+        mapHeight: 19980.94603271984
+        imageWidth: 345
+        imageHeight: 650

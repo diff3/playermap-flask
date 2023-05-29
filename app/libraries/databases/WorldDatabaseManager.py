@@ -6,21 +6,30 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from libraries.databases import WorldModels
 
-host="localhost"
-user="root"
-password="pwd"
-database="alpha_world"
+import yaml
 
-world_db_engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{database}?charset=utf8mb4', pool_pre_ping=True)
+with open('etc/config/config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
+
+
+maps_static_data = config['maps_static_data']
+host=config['database']['host']
+user = config['database']['user']
+password = config['database']['pass']
+database = "alpha_world"
+charset = config['database']['charset']
+
+world_db_engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{database}?charset={charset}', pool_pre_ping=True)
 SessionHolder = scoped_session(sessionmaker(bind=world_db_engine, autocommit=False, autoflush=True))
 
-mapLeftPoint = 4267.765836313618
-mapTopPoint = 4657.975130879346
-mapWidth = 10568.022008253096
-mapHeight = 19980.94603271984
+map_name = 'eastern_kingdoms'
 
-imageWidth = 345
-imageHeight = 650
+mapLeftPoint = maps_static_data[map_name]['mapLeftPoint']
+mapTopPoint = maps_static_data[map_name]['mapTopPoint']
+mapWidth = maps_static_data[map_name]['mapWidth']
+mapHeight = maps_static_data[map_name]['mapHeight']
+imageWidth = maps_static_data[map_name]['imageWidth']
+imageHeight = maps_static_data[map_name]['imageHeight']
 
 
 class WorldDatabaseManager:

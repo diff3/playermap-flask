@@ -1,5 +1,6 @@
 import hashlib
 import os
+import yaml
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -7,24 +8,29 @@ from sqlalchemy.orm import sessionmaker, scoped_session
 from libraries.databases import RealmModels
 from libraries.utils import Logger
 
+with open('etc/config/config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
 
-host="localhost"
-user="root"
-password="pwd"
-database="alpha_realm"
 
-realm_db_engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{database}?charset=utf8mb4', pool_pre_ping=True)
+maps_static_data = config['maps_static_data']
+host=config['database']['host']
+user = config['database']['user']
+password = config['database']['pass']
+database = "alpha_realm"
+charset = config['database']['charset']
+
+realm_db_engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{database}?charset={charset}', pool_pre_ping=True)
 SessionHolder = scoped_session(sessionmaker(bind=realm_db_engine, autocommit=False, autoflush=True))
 
-mapLeftPoint = 4267.765836313618
-mapTopPoint = 4657.975130879346
-mapWidth = 10568.022008253096
-mapHeight = 19980.94603271984
 
-imageWidth = 345
-imageHeight = 650
+map_name = 'eastern_kingdoms'
 
-
+mapLeftPoint = maps_static_data[map_name]['mapLeftPoint']
+mapTopPoint = maps_static_data[map_name]['mapTopPoint']
+mapWidth = maps_static_data[map_name]['mapWidth']
+mapHeight = maps_static_data[map_name]['mapHeight']
+imageWidth = maps_static_data[map_name]['imageWidth']
+imageHeight = maps_static_data[map_name]['imageHeight']
 
 
 class RealmDatabaseManager(object):
@@ -44,22 +50,6 @@ class RealmDatabaseManager(object):
 
         return len(results)
 
-    """
-    guid = Column(INTEGER(11), primary_key=True, autoincrement=True)
-    account_id = Column('account', ForeignKey('accounts.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False, index=True, server_default=text("0"), comment='Account Identifier')
-    realm_id = Column(TINYINT(3), nullable=False, server_default=text("1"))
-    name = Column(String(12), nullable=False, index=True, server_default=text("''"))
-    race = Column(TINYINT(3), nullable=False, server_default=text("0"))
-    class_ = Column('class', TINYINT(3), nullable=False, server_default=text("0"))
-    gender = Column(TINYINT(3), nullable=False, server_default=text("0"))
-    level = Column(TINYINT(3), nullable=False, server_default=text("0"))
-    position_x = Column(Float, nullable=False, server_default=text("0"))
-    position_y = Column(Float, nullable=False, server_default=text("0"))
-    position_z = Column(Float, nullable=False, server_default=text("0"))
-    map = Column(INTEGER(11), nullable=False, server_default=text("0"), comment='Map Identifier')
-    online = Column(TINYINT(3), nullable=False, index=True, server_default=text("0"))
-    """
-        
     def get_player_location(map_id):
         realm_db_session = SessionHolder()
 

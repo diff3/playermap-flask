@@ -6,4 +6,5 @@ __pycache__
 test.py
 todo.md
 virtualenv
-.json
+*.json
+WoW-Map.png

@@ -3,27 +3,21 @@
 
 __author__ = 'entropy'
 
-import configparser
-import json
 import logging
-import numpy as np
-import os
-import sys
-
-from libraries.databases.WorldDatabaseManager import WorldDatabaseManager
-from libraries.databases.RealmDatabaseManager import RealmDatabaseManager
-from libraries.databases.DbcDatabaseManager import DbcDatabaseManager
-# from libraries.databases.queryHandler import World, Realm, Dbc
-
 import libraries.calculations.viewport as viewport
-
+import os
+import secrets
+import sys
 import threading
+import uuid
+import yaml
+
 from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from libraries.calculations import position
-
-import uuid
-import secrets
+from libraries.databases.WorldDatabaseManager import WorldDatabaseManager
+from libraries.databases.RealmDatabaseManager import RealmDatabaseManager
+from libraries.databases.DbcDatabaseManager import DbcDatabaseManager
 
 client_ids = list()
 
@@ -41,15 +35,6 @@ def generate_unique_client_id():
 logger = logging.getLogger('socketio')
 logging.disable(logging.CRITICAL) 
 
-# Flytta till konfig
-mapLeftPoint = 4267.765836313618
-mapTopPoint = 4657.975130879346
-mapWidth = 10568.022008253096
-mapHeight = 19980.94603271984
-
-imageWidth = 345
-imageHeight = 650
-
 spawnsCratures = list()
 gameObjectsLocations = list()
 taxiLocations = list()
@@ -58,37 +43,47 @@ guestsLocation = list()
 
 client_counter = 0 
 
-
 path = os.path.dirname(__file__)
 sys.path.append(path)
 
-cfile = os.path.join(path, 'etc/config/config.conf')
+with open('etc/config/config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
 
-config = configparser.ConfigParser()
-config.read(cfile)
+frontend = config['frontend']
+app_conf = config['app']
+game_version = config['app']['game_version']
+maps_static_data = config['maps_static_data']
+viewport_offset = config['viewport']['offset']
+version = config[game_version]
 
-opac = dict(config.items('OPAC'))
-webapp = dict(config.items('WEBAPP'))
-expansion = dict(config.items(webapp['expansion']))
+
+map_name = 'eastern_kingdoms'
+
+mapLeftPoint = maps_static_data[map_name]['mapLeftPoint']
+mapTopPoint = maps_static_data[map_name]['mapTopPoint']
+mapWidth = maps_static_data[map_name]['mapWidth']
+mapHeight = maps_static_data[map_name]['mapHeight']
+imageWidth = maps_static_data[map_name]['imageWidth']
+imageHeight = maps_static_data[map_name]['imageHeight']
 
 
 app = Flask(__name__)
-app.config['STATIC_FOLDER'] = '/static'
-app.config['SECRET_KEY'] = webapp['secret_key']
-app.config['DEBUG'] = webapp['debug']
+app.config['STATIC_FOLDER'] = app_conf['static_folder']
+app.config['SECRET_KEY'] = app_conf['secret_key']
+app.config['DEBUG'] = app_conf['debug']
 app.clients = {}
 
-socketio = SocketIO(app, logger=True, engineio_logger=True)
+socketio = SocketIO(app, logger=app_conf['logger'], engineio_logger=app_conf['engineio_logger'])
 scheduler = None
 
 @app.route('/')
 def index():
     return render_template('index.html',
-                           title=opac['title'],
-                           admin=opac['admin'],
-                           map=expansion['mapfile'],
-                           logo=expansion['logofile'],
-                           expansion=webapp['expansion'])
+                           title=frontend['title'],
+                           admin=frontend['admin'],
+                           map=version['mapfile'],
+                           logo=version['logofile'],
+                           expansion=app_conf['game_version'])
 
 def players_online_thread():
     print("Updating players online")
@@ -101,38 +96,38 @@ def players_online_thread():
     for client_id in client_ids:
         if client_id not in processed_clients:
             playersOnline = RealmDatabaseManager.players_online()
-            socketio.emit('players_online', playersOnline, room=client_id, namespace=webapp['namespace'])
+            socketio.emit('players_online', playersOnline, room=client_id, namespace=app_conf['namespace'])
             processed_clients.add(client_id) 
     
     print("processed clients: ", processed_clients)
-    scheduler = threading.Timer(60.0, players_online_thread)
+    scheduler = threading.Timer(app_conf['timer'], players_online_thread)
     scheduler.start()
 
 
-@socketio.on('connect', namespace=webapp['namespace'])
+@socketio.on('connect', namespace=app_conf['namespace'])
 def handle_connect():
     print("Client connected")
     client_id = generate_unique_client_id()
-    socketio.emit('connected', client_id, namespace=webapp['namespace'])
+    socketio.emit('connected', client_id, namespace=app_conf['namespace'])
 
     client_ids.append(client_id)
     join_room(client_id)
 
     players_online_thread()
 
-@socketio.on('disconnect_event', namespace=webapp['namespace'])
+@socketio.on('disconnect_event', namespace=app_conf['namespace'])
 def handle_disconnect(clientId):
     if clientId in client_ids:
         client_ids.remove(clientId)
         leave_room(clientId)
         print(f"Client {clientId} disconnected")
 
-@socketio.on('request_players_location', namespace=webapp['namespace'])
+@socketio.on('request_players_location', namespace=app_conf['namespace'])
 def players_location(message):
     pass
 
 
-@socketio.on('mouse_enter_info', namespace=webapp['namespace'])
+@socketio.on('mouse_enter_info', namespace=app_conf['namespace'])
 def request_popup_information(data):
     
     match data['class_name']:
@@ -177,9 +172,6 @@ def request_popup_information(data):
                 'notes': image,
                 'url': f"https://db.thealphaproject.eu/index.php?action=show_creature&id={spawnsCratures[ID]['entry']}"
             }
-
-           # print(requested_data['url'])
-
         case 'taxi':
             ID = int(data['id'])
 
@@ -192,7 +184,6 @@ def request_popup_information(data):
                 'notes': "",
                 'url': "no"
             }
-
         case 'quest':
             ID = int(data['id'])
 
@@ -206,16 +197,31 @@ def request_popup_information(data):
                 'url': f"https://db.thealphaproject.eu/?action=show_quest&id={ID}&sort_order=Title&pos=1&max=1189"
             } 
 
-    emit('show_info_popups', {'requested_data': requested_data}, namespace=webapp['namespace'])
+    emit('show_info_popups', {'requested_data': requested_data}, namespace=app_conf['namespace'])
 
 
-@socketio.on('request_server_update', namespace=webapp['namespace'])
+@socketio.on('request_server_update', namespace=app_conf['namespace'])
 def request_server_update(data):
+    """
+    Handles a 'request_server_update' event from a socketio client. 
+    Recalculates the positions of various objects on a map using 
+    the supplied data. Returns a dictionary of updated positions 
+    based on the request type. 
+
+    Args:
+        data (dict): A dictionary of data supplied by the client.
+
+    Returns:
+         data (dict): A dictionary of updated positions.
+
+    Raises:
+        None.
+    """
+
     spawns_reduced = dict()
-    spawns_in_viewport = dict()
+    spawns_viewport = dict()
     
     magnification = data['magnification']
-    offset = position.calculate_data_reduction_offset(magnification)
 
     max_x = data['max_x']
     max_y = data['max_y']
@@ -234,22 +240,22 @@ def request_server_update(data):
             spawns = recalculated_spawns 
         case 'get_creatures_button':
             recalculated_spawns = position.recalculate(spawnsCratures, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
+            spawns_viewport = viewport.recalculate_objects_limited_by_viewport(recalculated_spawns, max_x, max_y, viewport_offset)
+            offset = position.calculate_offset_for_items(3000, len(spawns_viewport))
 
-            # with open('recalculated_spawns.json', 'w') as file:
-                # json.dump(recalculated_spawns, file, indent=4)
-
-            for id in recalculated_spawns:
+            for id in spawns_viewport:
                 if id % offset == 0:
-                    spawns_reduced[id] = recalculated_spawns[id]
+                    spawns_reduced[id] = spawns_viewport[id]
 
-            spawns = viewport.recalculate_objects_limited_by_viewport(spawns_reduced, max_x, max_y)
-            # spawns = spawns_reduced
+            spawns = spawns_reduced
         case 'get_gameobjects_button':
             recalculated_spawns = position.recalculate(gameObjectsLocations, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
+            spawns_viewport = viewport.recalculate_objects_limited_by_viewport(recalculated_spawns, max_x, max_y, viewport_offset)
+            offset = position.calculate_offset_for_items(3000, len(spawns_viewport))
 
-            for id in recalculated_spawns:
+            for id in spawns_viewport:
                 if id % offset == 0:
-                    spawns_reduced[id] = recalculated_spawns[id]
+                    spawns_reduced[id] = spawns_viewport[id]
 
             spawns = spawns_reduced 
         case 'get_worldports_button':
@@ -264,7 +270,7 @@ def request_server_update(data):
         case _:   
             pass
         
-    emit('receaving_update_from_server', {'spawnSVGElements': spawns}, namespace=webapp['namespace'])
+    emit('receaving_update_from_server', {'spawnSVGElements': spawns}, namespace=app_conf['namespace'])
 
 if __name__ == '__main__':
     spawnsCratures = WorldDatabaseManager.SpawnCreatures(0, 0)
@@ -273,4 +279,4 @@ if __name__ == '__main__':
     worldPorts = WorldDatabaseManager.WorldPorts(0)
     guestsLocation = WorldDatabaseManager.get_quests_location(0, 0)
 
-    socketio.run(app, host="0.0.0.0", port=5000, debug=True)
+    socketio.run(app, host=app_conf['host'], port=app_conf['port'], debug=app_conf['debug'])
