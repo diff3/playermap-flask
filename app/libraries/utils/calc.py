@@ -68,5 +68,5 @@ calc_coordinates ("Kalimdor",
                   2325.5,       # map X (pixels)
                   1406.8,       # map Y (pixels)
 
-                  345,         # map width  (pixels)
-                  650)         # map height (pixels)  
+                  6268,         # map width  (pixels)
+                  11815)         # map height (pixels)  

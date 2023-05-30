@@ -2022,12 +2022,7 @@ a {
   }
 }
 
-.map-container {
-  position: relative;
-  min-width: 100%;
-  min-height: 650px;
-  overflow: hidden;
-}
+
 .map-container__arrow {
   display: none;
   position: absolute;

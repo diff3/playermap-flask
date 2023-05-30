@@ -56,15 +56,35 @@ maps_static_data = config['maps_static_data']
 viewport_offset = config['viewport']['offset']
 version = config[game_version]
 
+def staticMapData(map_id):
+    mapLeftPoint = maps_static_data[map_id]['mapLeftPoint']
+    mapTopPoint = maps_static_data[map_id]['mapTopPoint']
+    mapWidth = maps_static_data[map_id]['mapWidth']
+    mapHeight = maps_static_data[map_id]['mapHeight']
+    imageWidth = maps_static_data[map_id]['imageWidth']
+    imageHeight = maps_static_data[map_id]['imageHeight']
 
-map_name = 'eastern_kingdoms'
+    return mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight
 
-mapLeftPoint = maps_static_data[map_name]['mapLeftPoint']
-mapTopPoint = maps_static_data[map_name]['mapTopPoint']
-mapWidth = maps_static_data[map_name]['mapWidth']
-mapHeight = maps_static_data[map_name]['mapHeight']
-imageWidth = maps_static_data[map_name]['imageWidth']
-imageHeight = maps_static_data[map_name]['imageHeight']
+def filterDictionary(original_dict, filters):
+    filtered_dict = original_dict.copy()
+
+    for filter_item in filters:
+        filter_key = filter_item[0]
+        filter_value = filter_item[1]
+
+        print(f"filter_key: {filter_key}, filter_value: {filter_value}")
+
+        tmp = {}
+        for key, value in filtered_dict.items():
+            if str(filter_key) in str(value) and str(value[filter_key]) == str(filter_value):
+                tmp[key] = value
+
+        filtered_dict = tmp
+
+    print(filtered_dict)
+    return filtered_dict
+
 
 
 app = Flask(__name__)
@@ -106,6 +126,7 @@ def players_online_thread():
 
 @socketio.on('connect', namespace=app_conf['namespace'])
 def handle_connect():
+    global client_ids
     print("Client connected")
     client_id = generate_unique_client_id()
     socketio.emit('connected', client_id, namespace=app_conf['namespace'])
@@ -117,10 +138,12 @@ def handle_connect():
 
 @socketio.on('disconnect_event', namespace=app_conf['namespace'])
 def handle_disconnect(clientId):
-    if clientId in client_ids:
-        client_ids.remove(clientId)
-        leave_room(clientId)
-        print(f"Client {clientId} disconnected")
+    global client_ids
+
+    while clientId in client_ids: client_ids.remove(clientId)
+    leave_room(clientId)
+
+    print(f"Client {clientId} is disconnected")
 
 @socketio.on('request_players_location', namespace=app_conf['namespace'])
 def players_location(message):
@@ -218,6 +241,9 @@ def request_server_update(data):
         None.
     """
 
+    map_id = frontend['map_id']
+    mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight = staticMapData(map_id)
+
     spawns_reduced = dict()
     spawns_viewport = dict()
     
@@ -233,13 +259,31 @@ def request_server_update(data):
         offset_x = float(offset_x[:-2])
         offset_y = float(offset_y[:-2])
 
+    if not 'filters' in data:
+        filters = [
+            ['map', 0],
+        ]
+    else:
+        filters = data['filters']
+
     match data['id']:
         case 'get_taxis_button':
-            recalculated_spawns = position.recalculate(taxiLocations, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
+            filtered_spawns = filterDictionary(taxiLocations, filters)
 
-            spawns = recalculated_spawns 
+            if len(filtered_spawns) == 0:
+                return
+            recalculated_spawns = position.recalculate(filtered_spawns, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
+
+            filtered_spawns = filterDictionary(recalculated_spawns, filters)
+            spawns = filtered_spawns 
         case 'get_creatures_button':
-            recalculated_spawns = position.recalculate(spawnsCratures, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
+            filtered_spawns = filterDictionary(spawnsCratures, filters)
+
+            if len(filtered_spawns) == 0:
+                return
+
+
+            recalculated_spawns = position.recalculate(filtered_spawns, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
             spawns_viewport = viewport.recalculate_objects_limited_by_viewport(recalculated_spawns, max_x, max_y, viewport_offset)
             offset = position.calculate_offset_for_items(3000, len(spawns_viewport))
 
@@ -249,7 +293,12 @@ def request_server_update(data):
 
             spawns = spawns_reduced
         case 'get_gameobjects_button':
-            recalculated_spawns = position.recalculate(gameObjectsLocations, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
+            filtered_spawns = filterDictionary(gameObjectsLocations, filters)
+
+            if len(filtered_spawns) == 0:
+                return
+            recalculated_spawns = position.recalculate(filtered_spawns, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
+         
             spawns_viewport = viewport.recalculate_objects_limited_by_viewport(recalculated_spawns, max_x, max_y, viewport_offset)
             offset = position.calculate_offset_for_items(3000, len(spawns_viewport))
 
@@ -259,11 +308,16 @@ def request_server_update(data):
 
             spawns = spawns_reduced 
         case 'get_worldports_button':
-            recalculated_spawns = position.recalculate(worldPorts, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
+            filtered_spawns = filterDictionary(worldPorts, filters)
+
+            if len(filtered_spawns) == 0:
+                return
+            recalculated_spawns = position.recalculate(filtered_spawns, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
 
             spawns = recalculated_spawns
         case 'get_quests_button':
-            recalculated_spawns = position.recalculate(guestsLocation, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
+            filtered_spawns = filterDictionary(guestsLocation, filters)
+            recalculated_spawns = position.recalculate(filtered_spawns, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
 
             spawns = recalculated_spawns
             pass
@@ -273,10 +327,10 @@ def request_server_update(data):
     emit('receaving_update_from_server', {'spawnSVGElements': spawns}, namespace=app_conf['namespace'])
 
 if __name__ == '__main__':
-    spawnsCratures = WorldDatabaseManager.SpawnCreatures(0, 0)
-    gameObjectsLocations = WorldDatabaseManager.SpawnGameObjects(0, 0)
-    taxiLocations = DbcDatabaseManager.get_all_taxi_nodes_by_mapid(0)
-    worldPorts = WorldDatabaseManager.WorldPorts(0)
-    guestsLocation = WorldDatabaseManager.get_quests_location(0, 0)
+    spawnsCratures = WorldDatabaseManager.SpawnCreatures(is_ignored=0)
+    gameObjectsLocations = WorldDatabaseManager.SpawnGameObjects(is_ignored=0)
+    taxiLocations = DbcDatabaseManager.get_all_taxi_nodes_by_mapid(config['frontend']['map_id'])
+    worldPorts = WorldDatabaseManager.WorldPorts(config['frontend']['map_id'])
+    guestsLocation = WorldDatabaseManager.get_quests_location(0, config['frontend']['map_id'])
 
     socketio.run(app, host=app_conf['host'], port=app_conf['port'], debug=app_conf['debug'])

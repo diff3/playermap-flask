@@ -23,14 +23,14 @@ realm_db_engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{data
 SessionHolder = scoped_session(sessionmaker(bind=realm_db_engine, autocommit=False, autoflush=True))
 
 
-map_name = 'eastern_kingdoms'
+map_id = config['frontend']['map_id']
 
-mapLeftPoint = maps_static_data[map_name]['mapLeftPoint']
-mapTopPoint = maps_static_data[map_name]['mapTopPoint']
-mapWidth = maps_static_data[map_name]['mapWidth']
-mapHeight = maps_static_data[map_name]['mapHeight']
-imageWidth = maps_static_data[map_name]['imageWidth']
-imageHeight = maps_static_data[map_name]['imageHeight']
+mapLeftPoint = maps_static_data[map_id]['mapLeftPoint']
+mapTopPoint = maps_static_data[map_id]['mapTopPoint']
+mapWidth = maps_static_data[map_id]['mapWidth']
+mapHeight = maps_static_data[map_id]['mapHeight']
+imageWidth = maps_static_data[map_id]['imageWidth']
+imageHeight = maps_static_data[map_id]['imageHeight']
 
 
 class RealmDatabaseManager(object):

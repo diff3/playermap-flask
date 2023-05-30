@@ -102,6 +102,9 @@ element = element.parentNode;
 const currentImage = element.querySelector("img")
 var screenWidth = $(window).width();
 var screenHeight = $(window).height();
+var idValue = $("#id").val();
+var mapValue = $("#map").val();
+filterList.push(["map", mapValue]);
 
 data = {
   'id': saved_button,
@@ -111,7 +114,8 @@ data = {
   'offsetHeight': currentImage.style.height,
   'offsetWidth': currentImage.style.width,
   'max_x': screenWidth,
-  'max_y': screenHeight
+  'max_y': screenHeight,
+  'filters': filterList
 }
 socket.emit('request_server_update', data);
 
@@ -275,6 +279,9 @@ function onMouseWheelMapContainer (event)
    // redrawSpawnPoints (currentImage)
    var screenWidth = $(window).width();
    var screenHeight = $(window).height();
+   var idValue = $("#id").val();
+   var mapValue = $("#map").val();
+   filterList.push(["map", mapValue]);
 
    data = {
     'id': saved_button,
@@ -284,7 +291,8 @@ function onMouseWheelMapContainer (event)
     'offsetHeight': currentImage.style.height,
     'offsetWidth': currentImage.style.width,
     'max_x': screenWidth,
-    'max_y': screenHeight
+    'max_y': screenHeight,
+    'filters': filterList
   }
 
   socket.emit('request_server_update', data);

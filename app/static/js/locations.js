@@ -8,7 +8,7 @@ function spawnSVGElements(positionData) {
   $("#world_objects").empty();
 
   for (const positionId in positionData) {
-    const { left, top, mapx, mapy, id, class_name, name, x, y, z} = positionData[positionId];
+    const { left, top, mapx, mapy, id, class_name, name, x, y, z, display_id} = positionData[positionId];
 
     const svgElement = $(svgTemplate);
     svgElement.attr('id', id);
@@ -19,6 +19,7 @@ function spawnSVGElements(positionData) {
     svgElement.attr('data-y', y);
     svgElement.attr('data-z', z);
     svgElement.attr('data-name', name);
+    svgElement.attr('data-display_id', display_id);
     svgElement.addClass(class_name);
     svgElement.addClass('popups');
     svgElement.css({ left: `${left}px`, top: `${top}px`, position: 'absolute', cursor: 'auto' });

@@ -2,9 +2,12 @@ var socket;
 var saved_button 
 var popup = $('#info_popup');
 var draggable='false'
+var filterList = [];
+var clientID;
 
 window.addEventListener('beforeunload', function() {
-  var clientId = localStorage.getItem('clientId');
+  console.log("Disconnecting from server");
+  // var clientId = localStorage.getItem('clientId');
   socket.emit('disconnect_event', clientId);
 });
 
@@ -12,9 +15,10 @@ $(document).ready(function() {
   socket = io.connect('http://' + document.domain + ':' + location.port + '/playermap');
   console.log("Page Loaded, with no errors");
 
-  socket.on('connected', function(clientId) {
+  socket.on('connected', function(data) {
     console.log("Connected to server");
-    localStorage.setItem('clientId', clientId);
+    clientId = data
+   // localStorage.setItem('clientId', data);
   });
 
 
@@ -44,34 +48,6 @@ $(document).ready(function() {
            }
 	});
    }); 
-
-  // Requesting update based on button id
-  $('.button').click(function() {
-      const currentImage = document.querySelector("#Eastern_Kingdoms_map");
-      saved_button = $(this).attr('id');
-
-      // console.log(currentImage);
-      var offsetLeft = currentImage.offsetLeft;
-      var offsetTop  = currentImage.offsetTop;
-      var offsetHeight = currentImage.offsetHeight;
-      var offsetWidth  = currentImage.offsetWidth;
-
-      var screenWidth = $(window).width();
-      var screenHeight = $(window).height();
-
-      data = {
-        'id': $(this).attr('id'),
-        'magnification': magnification,
-        'offsetLeft': offsetLeft,
-        'offsetTop': offsetTop,
-        'offsetHeight': offsetHeight,
-        'offsetWidth': offsetWidth,
-        'max_x': screenWidth,
-        'max_y': screenHeight
-      }
-
-      socket.emit('request_server_update', data);
-  });
 
   // Receaving update from server
   socket.on('receaving_update_from_server', function(data) {
@@ -165,11 +141,22 @@ $(document).on('click', ".popups", function(event) {
   var title = $(this).attr('data-name');
   var class_name = $(this).attr('data-classname');
   var url = $("#info_popup").attr('data-click_url');
-  var textToCopy = "";
+  var textToCopy = ""
 
-  if (event.altKey) {
+  if ($(this).attr('data-display_id')) {
+    var display_id = $(this).attr('data-display_id');
+  }
+
+
+  if (event.metaKey && event.shiftKey) {
+    copyToClipboard(title); 
+  }
+  else if (event.altKey && event.metaKey) {
+      copyToClipboard(display_id); 
+  }
+  else if (event.altKey) {
     var textToCopy = ".port " + x + " " + y + " " + z + " " + 0;
-  } 
+  }
   else if (event.metaKey && class_name == "worldport") {
     var textToCopy = ".tel " + title.toLowerCase();
   } else if(event.shiftKey && url != "no" && url != undefined ) {
@@ -214,5 +201,88 @@ $(document).on("click", "#Eastern_Kingdoms_map", function(event) {
     copyToClipboard(".port " + y + " " + x + " " + 300 + " " + 0);
   }
 }); 
+
+
+
+$("#add-button").click(function() {
+  var selectedFilter = $("#filters").val();
+  var query = $("#query-input").val();
+
+  if (selectedFilter || query) {
+    filterList.push([selectedFilter, query]);
+    console.log(filterList)
+    $("#filter-items").append("<span class='filter-item' data-filter='" + selectedFilter + "' data-query='" + query + "'>- " + selectedFilter + ": " + query + "</span>");
+    $("#query-input").val("");
+  }
+});
+
+$("#filter-items").on("click", ".filter-item", function() {
+  var selectedFilter = $(this).data("filter");
+  var query = $(this).data("query");
+
+  filterList = filterList.filter(function(filter) {
+ 
+    return !(filter[0] === selectedFilter && filter[1] === query);
+  });
+
+  $(this).remove();
+});
+
+
+$("#search-button").click(function() {
+  const currentImage = document.querySelector("#Eastern_Kingdoms_map");
+
+  var idValue = $("#id").val();
+  var mapValue = $("#map").val();
+  filterList.push(["map", mapValue]);
+
+  // console.log(currentImage);
+  var offsetLeft = currentImage.offsetLeft;
+  var offsetTop  = currentImage.offsetTop;
+  var offsetHeight = currentImage.offsetHeight;
+  var offsetWidth  = currentImage.offsetWidth;
+
+  var screenWidth = $(window).width();
+  var screenHeight = $(window).height();
+
+  data = {
+    'id': idValue,
+    'magnification': magnification,
+    'offsetLeft': offsetLeft,
+    'offsetTop': offsetTop,
+    'offsetHeight': offsetHeight,
+    'offsetWidth': offsetWidth,
+    'max_x': screenWidth,
+    'max_y': screenHeight,
+    'filters': filterList
+  }
+  
+  saved_button = idValue
+  socket.emit('request_server_update', data);
+  console.log(filterList); 
+});
+
+$("#clear-button").click(function() {
+  filterList = [];
+  $("#filter-items").empty();
+  $("#world_objects").empty();
+});
+
+// Get references to the necessary elements
+const toggleButton = document.getElementById('toggle-advanced');
+const advancedContainer = document.getElementById('advanced-features');
+
+// Add a click event listener to the toggle button
+toggleButton.addEventListener('click', () => {
+  // Toggle the visibility of the advanced container by adding/removing the 'hidden' class
+  if ($("#toggle-advanced").text() == '[ + ]') {
+    $("#toggle-advanced").text('[ - ]');
+  } else {
+    $("#toggle-advanced").text('[ + ]');
+  }
+  advancedContainer.classList.toggle('hidden');
+});
+
+
 
 });

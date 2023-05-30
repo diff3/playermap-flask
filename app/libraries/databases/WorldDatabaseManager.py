@@ -22,20 +22,22 @@ charset = config['database']['charset']
 world_db_engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{database}?charset={charset}', pool_pre_ping=True)
 SessionHolder = scoped_session(sessionmaker(bind=world_db_engine, autocommit=False, autoflush=True))
 
-map_name = 'eastern_kingdoms'
 
-mapLeftPoint = maps_static_data[map_name]['mapLeftPoint']
-mapTopPoint = maps_static_data[map_name]['mapTopPoint']
-mapWidth = maps_static_data[map_name]['mapWidth']
-mapHeight = maps_static_data[map_name]['mapHeight']
-imageWidth = maps_static_data[map_name]['imageWidth']
-imageHeight = maps_static_data[map_name]['imageHeight']
+map_id = config['frontend']['map_id']
+
+mapLeftPoint = maps_static_data[map_id]['mapLeftPoint']
+mapTopPoint = maps_static_data[map_id]['mapTopPoint']
+mapWidth = maps_static_data[map_id]['mapWidth']
+mapHeight = maps_static_data[map_id]['mapHeight']
+imageWidth = maps_static_data[map_id]['imageWidth']
+imageHeight = maps_static_data[map_id]['imageHeight']
+
 
 
 class WorldDatabaseManager:
 
     @staticmethod
-    def SpawnGameObjects(ignored, map_id):
+    def SpawnGameObjects(is_ignored=0):
         world_db_session = SessionHolder()
         
         count = int(0)
@@ -53,8 +55,7 @@ class WorldDatabaseManager:
             WorldModels.GameobjectTemplate.name,
             WorldModels.SpawnsGameobjects.spawn_entry
         ).filter(
-            WorldModels.SpawnsGameobjects.ignored == ignored,
-            WorldModels.SpawnsGameobjects.spawn_map == map_id,
+            WorldModels.SpawnsGameobjects.ignored == is_ignored,
             WorldModels.GameobjectTemplate.entry == WorldModels.SpawnsGameobjects.spawn_entry
         ).all()
 
@@ -82,7 +83,7 @@ class WorldDatabaseManager:
         return lst
 
     @staticmethod
-    def SpawnCreatures(map_id, is_ignored):
+    def SpawnCreatures(is_ignored=0):
         """
         Retrieves a dictionary of spawn creatures from the database for a given map_id and ignored flag.
         :param map_id: The ID of the map to retrieve the creatures from.
@@ -110,7 +111,6 @@ class WorldDatabaseManager:
                 WorldModels.SpawnsCreatures.spawn_entry1, 
                 WorldModels.SpawnsCreatures.map 
             ).filter(
-                WorldModels.SpawnsCreatures.map == map_id,
                 WorldModels.SpawnsCreatures.ignored == is_ignored,
                 WorldModels.SpawnsCreatures.spawn_entry1 ==  WorldModels.CreatureTemplate.entry
             ).all()
@@ -127,6 +127,7 @@ class WorldDatabaseManager:
                 'y': record.position_y,
                 'z': record.position_z,
                 'orientation': record.orientation,
+                'map': record.map,
                 'name': record.name,
                 'display_id': record.display_id1,
                 'class_name': 'creature'

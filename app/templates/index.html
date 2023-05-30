@@ -31,16 +31,40 @@
 </head>
 
   {% if admin == True %}
-  <div id="menu" class="wow-popup">
-    <div class="title">Menu</title>
-    </div>
-    <button class="button" id="get_creatures_button" type="button">Creatures</button><br />
-    <button class="button" id="get_gameobjects_button" type="button">Game objects</button><br />
-    <button id="get_players_button" type="button">Players</button><br />
-    <button class="button" id="get_taxis_button" type="button">Taxi nodes</button><br />
-    <button class="button" id="get_worldports_button" type="button">Worldport</button><br />
-    <button class="button" id="get_quests_button" type="button">Questgivers</button><br />
+<div class="search-container">
+  <div class="search-bar-container">
+  <select id="id">
+    <!-- Options for id dropdown -->
+    <option value="get_creatures_button">Creatures</option>
+    <option value="get_gameobjects_button">Game objects</option>
+    <option value="get_players_button">Players</option>
+    <option value="get_taxis_button">Taxi nodes</option>
+
+    
+    <option value="get_worldports_button">Worldport</option>
+     <option value="get_quests_button">Questgivers</option>
+  </select>
+  <select id="map">
+    <!-- Options for map dropdown -->
+    <option value="0">Eastern Kingdoms</option>
+    <option value="1">Kalimdor</option>
+  </select>
+  <span id="advanced-features" class="hidden">
+  <select id="filters">
+    <!-- Options for filters dropdown -->
+    <option value="name">Name</option>
+    <option value="display_id">Display id1</option>
+  </select>
+  <input type="text" id="query-input" placeholder="Enter Query">
+  <button id="add-button">Add Filter</button>
+</span>
+
+  <button id="search-button">Search</button>
+  <button id="clear-button">Clear</button>
+  <button id="toggle-advanced" class="button">[ + ]</button>
   </div>
+  <div id="filter-items"></div>
+</div>
   {% endif %}
 
   <div id="info_popup" class="wow-popup popup">
@@ -56,9 +80,9 @@
     <div class="row"><span id="level" class="shadow"></span><span id="faction"><img src="" /></span><span id="race"><img src="" /></span><span id="class"><img src="" /></span></div>
     <div class="row"><span id="zone" class="shadow"></span></div>
   </div>
-  <div class="centered-div">
+ <!-- <div class="centered-div">
     <img src="/static/img/logos/wowlogo.png" alt="Your Image">
-  </div>
+  </div> -->
 <aside class="caroussel" id="spawn-map-caroussel">
     <!-- <button onclick="resizeCaroussel(event)" class="caroussel__button-enlarge" title="Expand/contract map">
     <i class="fas fa-angles-left"></i>
@@ -98,6 +122,14 @@
         <p class="shortcut-box__content__key">Shift+Click on a spawn point</p>
         <p class="shortcut-box__content__description">
           Open new tab to db.thealphaproject.eu with more info
+        </p>
+        <p class="shortcut-box__content__key">Shift+Meta+Click on a spawn point</p>
+        <p class="shortcut-box__content__description">
+         Copy objects title to clipboard
+        </p>
+        <p class="shortcut-box__content__key">Alt+Meta+Click on a creature spawn point</p>
+        <p class="shortcut-box__content__description">
+         Copy objects display_id1 to clipboard
         </p>
        <p class="shortcut-box__content__key">Alt+Click on a spawn point</p>
         <p class="shortcut-box__content__description">
@@ -194,7 +226,7 @@
           max-width:initial;
           max-height:initial;
           position:absolute;
-          left:300px;
+          left:0;
           top:0;
           margin:0;'
           id='Eastern_Kingdoms_map'
@@ -233,7 +265,17 @@
   //  });
 
     // $("#expansion select").val({{ expansion }});
-   
+  
+var image = $('.map-container img');
+var containerWidth = $('.map-container').width();
+var imageWidth = image.width();
+var leftOffset = (containerWidth - imageWidth - 50) / 2;
+
+image.css({
+  'position': 'absolute',
+  'top': '15%',
+  'left': leftOffset + 'px',
+}); 
 
   </script>
 </body>

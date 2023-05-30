@@ -21,6 +21,8 @@ database:
 frontend:
     admin: true
     title: Online playermap
+    map_id: 0
+    ignored: 0
 
 0.5.3:
     name: 0.5.3
@@ -31,7 +33,8 @@ viewport:
     offset: 750
 
 maps_static_data: 
-    eastern_kingdoms:
+    # Eastern Kingdoms, 0.5.3
+    0:
         mapLeftPoint: 4267.765836313618
         mapTopPoint: 4657.975130879346
         mapWidth: 10568.022008253096
@@ -39,10 +42,11 @@ maps_static_data:
         imageWidth: 345
         imageHeight: 650
 
-    kalimdor:
-        mapLeftPoint: 4267.765836313618
-        mapTopPoint: 4657.975130879346
-        mapWidth: 10568.022008253096
-        mapHeight: 19980.94603271984
+    # Kalimdor 0.5.3:
+    1:
+        mapLeftPoint: 5042.486592588943 
+        mapTopPoint: 11763.32433764838 
+        mapWidth: 41055.58531585691
+        mapHeight: 77131.59363978311
         imageWidth: 345
         imageHeight: 650
