@@ -3,24 +3,9 @@
 
 __author__ = 'entropy'
 
-"""
-def calculate_data_reduction_offset(magnification):
-    if magnification >= 5:
-        reduction_offset = 10 - (5 + magnification / 5) 
-        reduction_offset = max(reduction_offset, 1)
-    else:
-        reduction_offset = 7
-
-    return int(reduction_offset)
-"""
 
 def calculate_offset_for_items(desired_items, total_items=18000):
-
-    # n = total_items / desired_items
-
-
     reduction_offset = max(1, int((total_items - desired_items) / total_items * 10))
-
     return reduction_offset
 
 def recalculate(records, map_left_point, map_top_point, map_width, map_height, image_width, image_height, magnification, offset_x, offset_y):
@@ -41,15 +26,6 @@ def recalculate_position(record, map_left_point, map_top_point, map_width, map_h
     x = record['x']
     y = record['y']
 
-    """mapx = (1 - (y - map_top_point)) / map_width
-    mapy = (1 - (x - map_left_point)) / map_height
-
-    mapx *= image_width
-    mapy *= image_height
-    
-    left = (mapx * magnification) + offset_x
-    top = (mapy * magnification) + offset_y """
-    
     mapx = (1 - (y - map_left_point)) / map_width
     mapy = (1 - (x - map_top_point)) / map_height
 

@@ -1,4 +1,5 @@
-html, body  {
+html,
+body {
   background-color: #000000;
   width: 100%;
   height: 100%;
@@ -6,7 +7,6 @@ html, body  {
   margin: 0;
   padding: 0;
 }
-
 
 #world {
   position: absolute;
@@ -68,13 +68,9 @@ html, body  {
   min-height: 40px;
 }
 
-#player_info_popup {}
-
 #quest_info_popup {
   min-height: 75px;
 }
-
-#creatures_info_popup {}
 
 .image {
   width: auto;
@@ -92,7 +88,8 @@ html, body  {
   padding: 10px;
 }
 
-button, select {
+button,
+select {
   width: 110px;
 }
 
@@ -132,14 +129,6 @@ button, select {
   padding-left: 5px;
 }
 
-#subTitle {
-
-}
-
-#notes {
-  
-}
-
 .centered-div {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -150,12 +139,11 @@ button, select {
 }
 
 .centered-div img {
-  display:block;
-  margin:0 auto;
-  width:200px;
-  height: 600px;
+  display: block;
+  margin: 0 auto;
+  width: 900px;
+  height: 700px;
 }
-
 
 .search-container {
   position: fixed;
@@ -165,18 +153,13 @@ button, select {
   width: 100%;
   height: 50px;
   background-color: rgba(0, 0, 0, 0.4);
-  padding: 10px; 
-}
-
-
-.search-bar-container {
-  
+  padding: 10px;
 }
 
 .map-container {
   display: block;
- width: 100%;
- height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .filter-items {
@@ -198,7 +181,10 @@ button, select {
   color: white;
 }
 
-#map, #search-button, #clear-button, #add-button {
+#map,
+#search-button,
+#clear-button,
+#add-button {
   width: auto;
 }
 
@@ -215,4 +201,10 @@ button, select {
   font-size: 16px;
   width: 40px;
   background-color: rgba(0, 0, 0, 0);
+}
+
+#spawned,
+#numSpawns,
+#player_online {
+  color: white;
 }

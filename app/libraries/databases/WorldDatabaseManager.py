@@ -145,7 +145,7 @@ class WorldDatabaseManager:
         return lst
 
     @staticmethod
-    def WorldPorts(map_id):
+    def WorldPorts():
         world_db_session = SessionHolder()
 
         count = int(0)
@@ -153,8 +153,6 @@ class WorldDatabaseManager:
 
         records = world_db_session.query (
             WorldModels.Worldports
-        ).filter(
-            WorldModels.Worldports.map == map_id
         ).all()
 
         length = len(records)
@@ -180,7 +178,7 @@ class WorldDatabaseManager:
 
 
     @staticmethod
-    def get_quests_location(map_id, is_ignored):
+    def get_quests_location(is_ignored):
         world_db_session = SessionHolder()
 
         count = int(0)

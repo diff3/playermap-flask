@@ -8,3 +8,4 @@ todo.md
 virtualenv
 *.json
 WoW-Map.png
+.vscode

@@ -1,8 +1,7 @@
 colorama==0.4.6
 Flask==2.3.2
-SQLAlchemy==2.0.13
+Flask-SocketIO==5.3.4
 PyMySQL==1.0.3
-mysql-connector==2.2.9
-numpy==1.24.3
-flask_socketio
-apscheduler-3.10.1
+PyYAML==6.0
+python-socketio==5.8.0
+SQLAlchemy==2.0.13

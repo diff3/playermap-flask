@@ -3,8 +3,7 @@ version: '3.9'
 services:
   playermap:
     image: playermap:latest
-    container_name: playermap
-    build: .
+    build: app/etc/containers/playermap-flask
     hostname: playermap
     tty: true
     volumes:
@@ -13,6 +12,19 @@ services:
       - 5000:5000
     restart: on-failure
 
+  sql:
+    image: playermap-mariadb:latest
+    build: app/etc/containers/mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=pwd
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./app/etc/databases/:/etc/databases/
+    restart: on-failure
+    profiles:
+      - sql
+    
 networks:
   default:
     name: alpha-core-network

@@ -12,7 +12,7 @@ import threading
 import uuid
 import yaml
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 from flask_socketio import SocketIO, emit, join_room, leave_room
 from libraries.calculations import position
 from libraries.databases.WorldDatabaseManager import WorldDatabaseManager
@@ -253,6 +253,7 @@ def request_server_update(data):
     max_y = data['max_y']
 
     offset_x = data['offsetLeft']
+   
     offset_y = data['offsetTop']
 
     if type(offset_x) == str:
@@ -269,6 +270,7 @@ def request_server_update(data):
     match data['id']:
         case 'get_taxis_button':
             filtered_spawns = filterDictionary(taxiLocations, filters)
+            numSpawns = len(taxiLocations)
 
             if len(filtered_spawns) == 0:
                 return
@@ -278,6 +280,7 @@ def request_server_update(data):
             spawns = filtered_spawns 
         case 'get_creatures_button':
             filtered_spawns = filterDictionary(spawnsCratures, filters)
+            numSpawns = len(spawnsCratures)
 
             if len(filtered_spawns) == 0:
                 return
@@ -294,6 +297,7 @@ def request_server_update(data):
             spawns = spawns_reduced
         case 'get_gameobjects_button':
             filtered_spawns = filterDictionary(gameObjectsLocations, filters)
+            numSpawns = len(gameObjectsLocations)
 
             if len(filtered_spawns) == 0:
                 return
@@ -309,6 +313,7 @@ def request_server_update(data):
             spawns = spawns_reduced 
         case 'get_worldports_button':
             filtered_spawns = filterDictionary(worldPorts, filters)
+            numSpawns = len(worldPorts)
 
             if len(filtered_spawns) == 0:
                 return
@@ -317,20 +322,26 @@ def request_server_update(data):
             spawns = recalculated_spawns
         case 'get_quests_button':
             filtered_spawns = filterDictionary(guestsLocation, filters)
+            numSpawns = len(guestsLocation)
             recalculated_spawns = position.recalculate(filtered_spawns, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
 
             spawns = recalculated_spawns
             pass
         case _:   
             pass
-        
-    emit('receaving_update_from_server', {'spawnSVGElements': spawns}, namespace=app_conf['namespace'])
+
+    spawnData = {
+        "spawned": len(spawns),
+        "numSpawns": numSpawns
+    }
+
+    emit('receaving_update_from_server', {'spawnSVGElements': spawns, 'spawnData': spawnData}, namespace=app_conf['namespace'])
 
 if __name__ == '__main__':
     spawnsCratures = WorldDatabaseManager.SpawnCreatures(is_ignored=0)
     gameObjectsLocations = WorldDatabaseManager.SpawnGameObjects(is_ignored=0)
-    taxiLocations = DbcDatabaseManager.get_all_taxi_nodes_by_mapid(config['frontend']['map_id'])
-    worldPorts = WorldDatabaseManager.WorldPorts(config['frontend']['map_id'])
-    guestsLocation = WorldDatabaseManager.get_quests_location(0, config['frontend']['map_id'])
+    taxiLocations = DbcDatabaseManager.get_all_taxi_nodes_by_mapid()
+    worldPorts = WorldDatabaseManager.WorldPorts()
+    guestsLocation = WorldDatabaseManager.get_quests_location(0)
 
     socketio.run(app, host=app_conf['host'], port=app_conf['port'], debug=app_conf['debug'])

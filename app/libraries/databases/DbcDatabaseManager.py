@@ -1,7 +1,7 @@
 # import os
-from collections import defaultdict
-from typing import Optional
-
+# from collections import defaultdict
+# from typing import Optional
+import yaml
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 
@@ -19,12 +19,19 @@ from libraries.utils.Logger import Logger
 # DB_DBC_NAME = config.Database.DBNames.dbc_db
 
 
-DB_HOST="localhost"
-DB_USER="root"
-DB_PASSWORD="pwd"
-DB_DBC_NAME="alpha_dbc"
 
-dbc_db_engine = create_engine(f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_DBC_NAME}?charset=utf8mb4',
+with open('etc/config/config.yaml', 'r') as file:
+    config = yaml.safe_load(file)
+
+
+maps_static_data = config['maps_static_data']
+host=config['database']['host']
+user = config['database']['user']
+password = config['database']['pass']
+database = "alpha_dbc"
+charset = config['database']['charset']
+
+dbc_db_engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}/{database}?charset={charset}',
                               pool_pre_ping=True)
 SessionHolder = scoped_session(sessionmaker(bind=dbc_db_engine, autoflush=True))
 
@@ -33,7 +40,7 @@ SessionHolder = scoped_session(sessionmaker(bind=dbc_db_engine, autoflush=True))
 class DbcDatabaseManager:
 
     @staticmethod
-    def get_all_taxi_nodes_by_mapid(map_id):
+    def get_all_taxi_nodes_by_mapid():
         dbc_db_session = SessionHolder()
         
         count = int(0)
@@ -46,8 +53,8 @@ class DbcDatabaseManager:
                 DbcModels.TaxiNode.X,
                 DbcModels.TaxiNode.Y,
                 DbcModels.TaxiNode.Z,
-                DbcModels.TaxiNode.Name_enUS,
-            ).filter_by(ContinentID=map_id).all()
+                DbcModels.TaxiNode.Name_enUS
+            ).all()
         
         dbc_db_session.close()
 
@@ -61,6 +68,7 @@ class DbcDatabaseManager:
                 'y': record.Y,
                 'z': record.Z,
                 'name': record.Name_enUS,
+                'map': record.ContinentID,
                 'class_name': 'taxi'
             }
 

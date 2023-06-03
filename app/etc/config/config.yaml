@@ -11,7 +11,7 @@ app:
     engineio_logger: true
 
 database:
-    host: localhost
+    host: 127.0.0.1
     user: root
     pass: pwd
     port: 3306
@@ -41,12 +41,12 @@ maps_static_data:
         mapHeight: 19980.94603271984
         imageWidth: 345
         imageHeight: 650
-
+        # 2000, 3770
     # Kalimdor 0.5.3:
     1:
-        mapLeftPoint: 5042.486592588943 
-        mapTopPoint: 11763.32433764838 
-        mapWidth: 41055.58531585691
-        mapHeight: 77131.59363978311
+        mapLeftPoint:  5042.486592588943
+        mapTopPoint: 11763.32433764838
+        mapWidth: 13100.059130777572 
+        mapHeight: 24611.604572321823 
         imageWidth: 345
         imageHeight: 650

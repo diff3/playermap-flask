@@ -12,7 +12,7 @@ app dir will be mounted as '/opt/playermap' inside the docker container.
 if you having trouble accessing alpha-core MariaDB, add 'hostname: sql' to Alpha-core's docker-compose, under 'sql' section.
 
 
-
+docker compose --profile sql up
 
 **All creatures in Alpha-core spawned**
 
