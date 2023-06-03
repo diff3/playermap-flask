@@ -11,7 +11,7 @@ app:
     engineio_logger: true
 
 database:
-    host: 127.0.0.1
+    host: sql
     user: root
     pass: pwd
     port: 3306
