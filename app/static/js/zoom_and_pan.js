@@ -84,11 +84,11 @@ function onMouseMoveMapContainer(event) {
   * @return {void}
   */
 
-  event.preventDefault();
-
   if (!isDragging) {
     return;
   }
+
+  event.preventDefault();
 
   const [currentImage, imageLeft, imageTop, offsetX, offsetY] = findImageInfo(event);
 
@@ -106,7 +106,6 @@ function onMouseMoveMapContainer(event) {
 
   redrawSpawnPoints(currentImage);
 }
-
 function onMouseWheelMapContainer(event) {
   event.preventDefault();
   clearTimeout(wheelTimeout);

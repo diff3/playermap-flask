@@ -143,6 +143,7 @@ $(document).ready(function () {
       event.preventDefault();
       activeID = getActiveDivId()
       data = getImageData(`#${activeID}`);
+      console.log("Click drag")
 
     if (event.altKey) {
       var offsetX = event.offsetX;
@@ -152,7 +153,7 @@ $(document).ready(function () {
 
       const currentImage = document.querySelector(`#${activeID}`);
 
-      console.log("data: ", data);      
+      // console.log("data: ", data);      
 
 
       const mapWidth = currentImage.dataset.mapwidth

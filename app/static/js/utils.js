@@ -30,6 +30,7 @@ function getImageData(elementId) {
     // Create data object using standardized variable names
     const data = {
         id,
+        map,
         magnification,
         offsetLeft: offsetLeft,
         offsetTop: offsetTop,
@@ -162,6 +163,5 @@ function switchActiveMap() {
     }
 
     imageElement.data("top", imageTop);
-  imageElement.data("left", imageLeft);
-
+    imageElement.data("left", imageLeft);
 }

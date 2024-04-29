@@ -2,9 +2,10 @@ version: '3.9'
 
 services:
   playermap:
-    image: playermap:latest
-    build: app/etc/containers/playermap-flask
-    hostname: playermap
+    image: ${PROJECT}:${OS_TAG}
+    build: {context: ., dockerfile: app/etc/containers/playermap-flask/Dockerfile}
+    hostname: ${PROJECT}
+    container_name: ${PROJECT}
     tty: true
     volumes:
       - ./app:/opt/playermap-flask
@@ -13,8 +14,10 @@ services:
     restart: on-failure
 
   sql:
-    image: playermap-mariadb:latest
-    build: app/etc/containers/mariadb
+    image: ${PROJECT}-db:${DB_TAG}
+    build: app/etc/containers/db
+    container_name: ${PROJECT}-db
+    hostname: ${PROJECT}-db
     environment:
       - MYSQL_ROOT_PASSWORD=pwd
     ports:
@@ -28,3 +31,4 @@ services:
 networks:
   default:
     name: alpha-core-network
+    external: true

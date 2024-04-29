@@ -1,6 +1,8 @@
 FROM python:3.11-alpine
 
-COPY entry.sh /
-RUN chmod +x /entry.sh
+COPY app/requirements.txt /
+RUN pip3 install -r /requirements.txt
 
-CMD /entry.sh
+WORKDIR /opt/playermap-flask
+
+CMD [ "python3", "main.py" ]
