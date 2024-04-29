@@ -67,6 +67,9 @@ def staticMapData(map_id):
     return mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight
 
 def filterDictionary(original_dict, filters):
+
+    print("hello")
+
     filtered_dict = original_dict.copy()
 
     for filter_item in filters:
@@ -260,6 +263,9 @@ def request_server_update(data):
         offset_x = float(offset_x[:-2])
         offset_y = float(offset_y[:-2])
 
+    print(data)
+
+
     if not 'filters' in data:
         filters = [
             ['map', 0],
@@ -297,12 +303,7 @@ def request_server_update(data):
             spawns = spawns_reduced
         case 'get_gameobjects_button':
             filtered_spawns = filterDictionary(gameObjectsLocations, filters)
-            numSpawns = len(gameObjectsLocations)
-
-            if len(filtered_spawns) == 0:
-                return
-            recalculated_spawns = position.recalculate(filtered_spawns, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
-         
+            numSpawns = len(filtered_spawns)
             spawns_viewport = viewport.recalculate_objects_limited_by_viewport(recalculated_spawns, max_x, max_y, viewport_offset)
             offset = position.calculate_offset_for_items(3000, len(spawns_viewport))
 
@@ -344,4 +345,4 @@ if __name__ == '__main__':
     worldPorts = WorldDatabaseManager.WorldPorts()
     guestsLocation = WorldDatabaseManager.get_quests_location(0)
 
-    socketio.run(app, host=app_conf['host'], port=app_conf['port'], debug=False)
+    socketio.run(app, host=app_conf['host'], port=app_conf['port'], debug=True)

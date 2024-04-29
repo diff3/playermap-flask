@@ -1,7 +1,6 @@
 assets
 .DS_Store
 config.conf
-config.yaml
 !config.yaml-dist
 *.pyc
 __pycache__
