@@ -179,3 +179,15 @@ function switchActiveMap() {
     imageElement.data("top", imageTop);
     imageElement.data("left", imageLeft);
 }
+
+function replaceQuestTags(text) {
+    text = text.replace(/\$n/g, "&lt;Name&gt;");
+    text = text.replace(/\$N/g, "&lt;Name&gt;");
+    text = text.replace(/\$b/g, "<br/>");
+    text = text.replace(/\$B/g, "<br/>");
+    text = text.replace(/\$c/g, "&lt;class&gt;");
+    text = text.replace(/\$C/g, "&lt;Class&gt;");
+    text = text.replace(/\$r/g, "&lt;race&gt;");
+    text = text.replace(/\$R/g, "&lt;Race&gt;");
+    return text;
+}

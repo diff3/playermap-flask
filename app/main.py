@@ -217,9 +217,9 @@ def request_popup_information(data):
                 'mouseX': data['mouseX'],
                 'mouseY': data['mouseY'], 
                 'name': guestsLocation[int(data['id'])]['title'],
-                'subTitle': f"npc: {guestsLocation[int(data['id'])]['name']}",
+                'subTitle': f"<span style='color:#bbbbbb;'>NPC: {guestsLocation[int(data['id'])]['name']}</>",
                 'data': guestsLocation[int(data['id'])],
-                'notes': f"{guestsLocation[int(data['id'])]['details']} <br/>Shift + Click for info",
+                'notes': f"{guestsLocation[int(data['id'])]['details']} <br/><br/><span style='color:#bbbbbb;'>Shift + Click for info</>",
                 'url': f"https://db.thealphaproject.eu/?action=show_quest&id={ID}&sort_order=Title&pos=1&max=1189"
             } 
 
