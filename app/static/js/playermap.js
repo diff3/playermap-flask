@@ -108,6 +108,7 @@ $(document).ready(function () {
     var class_name = $(this).attr('data-classname');
     var url = $("#info_popup").attr('data-click_url');
     var textToCopy = ""
+    const mapId = $("#map").val();
     
     if (event.metaKey && event.shiftKey) {
       textToCopy = title;
@@ -122,7 +123,7 @@ $(document).ready(function () {
       }
     }
     else if (event.altKey) {
-      textToCopy = `.port ${x} ${y} ${z} ${0}`;;
+      textToCopy = `.port ${x} ${y} ${z} ${mapId}`;;
     }
     else if (event.metaKey && class_name == "worldport") {
       textToCopy = `.tel ${title.toLowerCase()}`;
@@ -161,6 +162,8 @@ $(document).ready(function () {
       const mapLeft = currentImage.dataset.mapleft
       const mapTop = currentImage.dataset.maptop
 
+      const mapId = $("#map").val();
+
       const imageWidth = currentImage.dataset.width
       const imageHeight = currentImage.dataset.height
       console.log("mapWidth: ", mapWidth + " mapHeight: " + mapHeight + " mapLeft: " + mapLeft + " mapTop: " + mapTop + " imageWidth: " + imageWidth + " imageHeight: " + imageHeight); ;
@@ -177,7 +180,7 @@ $(document).ready(function () {
       const x = mapLeft - mapWidth * xOffset
       const y = mapTop - mapHeight * yOffset
 
-      copyToClipboard(".port " + y + " " + x + " " + 300 + " " + 0);
+      copyToClipboard(".port " + y + " " + x + " " + 300 + " " + mapId);
     }
   });
 
