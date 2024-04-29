@@ -30,7 +30,6 @@ function getImageData(elementId) {
     // Create data object using standardized variable names
     const data = {
         id,
-        map,
         magnification,
         offsetLeft: offsetLeft,
         offsetTop: offsetTop,

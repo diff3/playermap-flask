@@ -14,7 +14,7 @@ database:
     host: sql
     user: root
     pass: pwd
-    port: 3303
+    port: 3306
     charset: utf8mb4
     database: None
 

@@ -241,11 +241,7 @@ def request_server_update(data):
         None.
     """
 
-    map_id = int(data['map'])
-
-    # print(f"map_id {map_id}")
-    # map_id = 0
-#    map_id = frontend['map_id']
+    map_id = int(data['filters'][0][1])
 
     mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight = staticMapData(map_id)
 
