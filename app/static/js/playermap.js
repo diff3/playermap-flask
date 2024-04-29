@@ -108,6 +108,7 @@ $(document).ready(function () {
     var class_name = $(this).attr('data-classname');
     var url = $("#info_popup").attr('data-click_url');
     var textToCopy = ""
+    const mapId = $("#map").val();
     
     if (event.metaKey && event.shiftKey) {
       textToCopy = title;
@@ -122,7 +123,7 @@ $(document).ready(function () {
       }
     }
     else if (event.altKey) {
-      textToCopy = `.port ${x} ${y} ${z} ${0}`;;
+      textToCopy = `.port ${x} ${y} ${z} ${mapId}`;;
     }
     else if (event.metaKey && class_name == "worldport") {
       textToCopy = `.tel ${title.toLowerCase()}`;
