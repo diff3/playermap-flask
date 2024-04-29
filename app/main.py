@@ -33,7 +33,7 @@ def generate_unique_client_id():
 
 
 logger = logging.getLogger('socketio')
-logging.disable(logging.CRITICAL) 
+logging.getLogger('engineio').setLevel(logging.NONE)
 
 spawnsCratures = list()
 gameObjectsLocations = list()
@@ -90,7 +90,7 @@ def filterDictionary(original_dict, filters):
 app = Flask(__name__)
 app.config['STATIC_FOLDER'] = app_conf['static_folder']
 app.config['SECRET_KEY'] = app_conf['secret_key']
-app.config['DEBUG'] = app_conf['debug']
+app.config['DEBUG'] = False
 app.clients = {}
 
 socketio = SocketIO(app, logger=app_conf['logger'], engineio_logger=app_conf['engineio_logger'])
@@ -254,7 +254,6 @@ def request_server_update(data):
     max_y = data['max_y']
 
     offset_x = data['offsetLeft']
-   
     offset_y = data['offsetTop']
 
     if type(offset_x) == str:
@@ -345,4 +344,4 @@ if __name__ == '__main__':
     worldPorts = WorldDatabaseManager.WorldPorts()
     guestsLocation = WorldDatabaseManager.get_quests_location(0)
 
-    socketio.run(app, host=app_conf['host'], port=app_conf['port'], debug=app_conf['debug'])
+    socketio.run(app, host=app_conf['host'], port=app_conf['port'], debug=False)

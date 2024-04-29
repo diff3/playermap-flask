@@ -143,7 +143,7 @@ $(document).ready(function () {
       event.preventDefault();
       activeID = getActiveDivId()
       data = getImageData(`#${activeID}`);
-      console.log("Click drag")
+
 
     if (event.altKey) {
       var offsetX = event.offsetX;

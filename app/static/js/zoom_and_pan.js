@@ -55,7 +55,18 @@ function onMouseDownMapContainer(event) {
 
   event.preventDefault();
   const [currentImage, imageLeft, imageTop, offsetX, offsetY] = findImageInfo(event);
-  if (!currentImage) return;
+
+  const isInfoPopupVisible = $('#info_popup').is(':visible');
+
+  // If info_popup is visible, do not proceed with image movement
+  if (isInfoPopupVisible) {
+    return;
+  }
+if (!currentImage || event.target.id.search("map-container active") > 0) {
+  console.log("onMouseDownMapContainer: not active")
+  return;
+}
+
   hidePopup();
   startDragX = offsetX;
   startDragY = offsetY;
@@ -90,9 +101,18 @@ function onMouseMoveMapContainer(event) {
 
   event.preventDefault();
 
+  const isInfoPopupVisible = $('#info_popup').is(':visible');
+
+  // If info_popup is visible, do not proceed with image movement
+  if (isInfoPopupVisible) {
+    return;
+  }
+
+
   const [currentImage, imageLeft, imageTop, offsetX, offsetY] = findImageInfo(event);
 
-  if (!currentImage || event.target.id.search("container") > 0) {
+  if (!currentImage || event.target.id.search("map-container active") > 0) {
+  console.log("onMouseMoveMapContainer: not active")
     return;
   }
 
@@ -104,15 +124,23 @@ function onMouseMoveMapContainer(event) {
   currentImage.style.left = `${imageLeft - diffX}px`;
   currentImage.style.top = `${imageTop - diffY}px`;
 
-  redrawSpawnPoints(currentImage);
+redrawSpawnPoints(currentImage);
 }
 function onMouseWheelMapContainer(event) {
   event.preventDefault();
   clearTimeout(wheelTimeout);
 
   const [currentImage, imageLeft, imageTop, offsetX, offsetY] = findImageInfo(event)
-  if (!currentImage)
-    return
+  const isInfoPopupVisible = $('#info_popup').is(':visible');
+
+  // If info_popup is visible, do not proceed with image movement
+  if (isInfoPopupVisible) {
+    return;
+  }
+  if (!currentImage || event.target.id.search("map-container active") > 0) {
+    console.log("onMouseWheelMapContainern: ot active")
+      return;
+    }
 
   // hide help box
   hideHelp();

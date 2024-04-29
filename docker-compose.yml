@@ -10,7 +10,7 @@ services:
     volumes:
       - ./app:/opt/playermap-flask
     ports:
-      - 5000:5000
+      - 8000:5000
     restart: on-failure
 
   sql:
