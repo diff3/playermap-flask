@@ -32,8 +32,8 @@ def generate_unique_client_id():
             return unique_id_str
 
 
-logger = logging.getLogger('socketio')
-logging.getLogger('engineio').setLevel(logging.NONE)
+# logger = logging.getLogger('socketio')
+# logging.getLogger('engineio').setLevel(logging.NONE)
 
 spawnsCratures = list()
 gameObjectsLocations = list()
