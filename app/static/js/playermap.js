@@ -162,6 +162,8 @@ $(document).ready(function () {
       const mapLeft = currentImage.dataset.mapleft
       const mapTop = currentImage.dataset.maptop
 
+      const mapId = $("#map").val();
+
       const imageWidth = currentImage.dataset.width
       const imageHeight = currentImage.dataset.height
       console.log("mapWidth: ", mapWidth + " mapHeight: " + mapHeight + " mapLeft: " + mapLeft + " mapTop: " + mapTop + " imageWidth: " + imageWidth + " imageHeight: " + imageHeight); ;
@@ -178,7 +180,7 @@ $(document).ready(function () {
       const x = mapLeft - mapWidth * xOffset
       const y = mapTop - mapHeight * yOffset
 
-      copyToClipboard(".port " + y + " " + x + " " + 300 + " " + 0);
+      copyToClipboard(".port " + y + " " + x + " " + 300 + " " + mapId);
     }
   });
 
