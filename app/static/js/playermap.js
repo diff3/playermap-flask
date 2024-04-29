@@ -68,7 +68,14 @@ $(document).ready(function () {
 
     $("#info_popup #title").text(data['requested_data']['name']);
     $("#info_popup #subTitle").html(data['requested_data']['subTitle']);
-    $("#info_popup #notes").html(data['requested_data']['notes']);
+    notes = data['requested_data']['notes'];
+    
+    // replace quest tags
+    if (data['requested_data']['url'].indexOf("action=show_quest") !== -1)
+    {
+      notes = replaceQuestTags(notes);
+    }
+    $("#info_popup #notes").html(notes);
 
     var offsetX = 10; // Adjust the horizontal offset
     var offsetY = 10; // Adjust the vertical offset
