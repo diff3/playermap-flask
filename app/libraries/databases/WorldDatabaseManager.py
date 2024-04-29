@@ -184,7 +184,7 @@ class WorldDatabaseManager:
         count = int(0)
         lst = dict()
 
-        records = world_db_session.query(
+        """ records = world_db_session.query(
             WorldModels.CreatureTemplate.name,
             WorldModels.QuestTemplate.Title,
             WorldModels.QuestTemplate.Details,
@@ -204,7 +204,33 @@ class WorldDatabaseManager:
             WorldModels.CreatureTemplate.entry == WorldModels.QuestTemplate.entry,
             WorldModels.CreatureTemplate.entry == WorldModels.SpawnsCreatures.spawn_entry1,
             WorldModels.QuestTemplate.ignored == is_ignored
+        ).all() """
+        
+        records = world_db_session.query(
+            WorldModels.CreatureTemplate.name,
+            WorldModels.QuestTemplate.Title,
+            WorldModels.QuestTemplate.Details,
+            WorldModels.QuestTemplate.Objectives,
+            WorldModels.QuestTemplate.PrevQuestId,
+            WorldModels.QuestTemplate.NextQuestId,
+            WorldModels.SpawnsCreatures.position_x,
+            WorldModels.SpawnsCreatures.position_y,
+            WorldModels.SpawnsCreatures.position_z,
+            WorldModels.SpawnsCreatures.map,
+            WorldModels.QuestTemplate.entry
+        ).select_from(
+            WorldModels.SpawnsCreatures,
+            WorldModels.CreatureTemplate,
+            WorldModels.QuestTemplate,
+            WorldModels.t_creature_quest_starter
+        ).where(
+                WorldModels.CreatureTemplate.entry == WorldModels.SpawnsCreatures.spawn_entry1,
+                WorldModels.t_creature_quest_starter.c.entry == WorldModels.CreatureTemplate.entry,
+                WorldModels.t_creature_quest_starter.c.quest == WorldModels.QuestTemplate.entry,
+                WorldModels.QuestTemplate.ignored == is_ignored    
         ).all()
+
+
 
         length = len(records)
 
