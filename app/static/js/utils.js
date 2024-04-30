@@ -78,7 +78,7 @@ function findImageInfo(event) {
     var element = event.target;
 
     while (element) {
-        if (element.classList && element.classList.contains("map-container")) {
+        if (element.classList && element.classList.contains("map-container") && element.classList.contains("active")) {
             break;
         }
 

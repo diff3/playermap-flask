@@ -56,12 +56,6 @@ function onMouseDownMapContainer(event) {
   event.preventDefault();
   const [currentImage, imageLeft, imageTop, offsetX, offsetY] = findImageInfo(event);
 
-  const isInfoPopupVisible = $('#info_popup').is(':visible');
-
-  // If info_popup is visible, do not proceed with image movement
-  if (isInfoPopupVisible) {
-    return;
-  }
 if (!currentImage || event.target.id.search("map-container active") > 0) {
   console.log("onMouseDownMapContainer: not active")
   return;
@@ -95,37 +89,29 @@ function onMouseMoveMapContainer(event) {
   * @return {void}
   */
 
+  event.preventDefault();
+
   if (!isDragging) {
     return;
   }
 
-  event.preventDefault();
-
-  const isInfoPopupVisible = $('#info_popup').is(':visible');
-
-  // If info_popup is visible, do not proceed with image movement
-  if (isInfoPopupVisible) {
-    return;
-  }
-
-
   const [currentImage, imageLeft, imageTop, offsetX, offsetY] = findImageInfo(event);
 
-  if (!currentImage || event.target.id.search("map-container active") > 0) {
-  console.log("onMouseMoveMapContainer: not active")
+  if (!currentImage) {
     return;
   }
-
+  
   hideHelp();
 
-  const diffX = startDragX - offsetX;
-  const diffY = startDragY - offsetY;
+  const diffX = event.movementX;
+  const diffY = event.movementY;
 
-  currentImage.style.left = `${imageLeft - diffX}px`;
-  currentImage.style.top = `${imageTop - diffY}px`;
+  currentImage.style.left = `${imageLeft + diffX}px`;
+  currentImage.style.top = `${imageTop + diffY}px`;
 
-redrawSpawnPoints(currentImage);
+  redrawSpawnPoints(currentImage); 
 }
+
 function onMouseWheelMapContainer(event) {
   event.preventDefault();
   clearTimeout(wheelTimeout);
@@ -134,9 +120,6 @@ function onMouseWheelMapContainer(event) {
   const isInfoPopupVisible = $('#info_popup').is(':visible');
 
   // If info_popup is visible, do not proceed with image movement
-  if (isInfoPopupVisible) {
-    return;
-  }
   if (!currentImage || event.target.id.search("map-container active") > 0) {
     console.log("onMouseWheelMapContainern: ot active")
       return;
