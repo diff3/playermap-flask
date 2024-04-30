@@ -1,3 +1,14 @@
+function replacePair(selectedFilter, newQuery) {
+    for (let i = 0; i < filterListTmp.length; i++) {
+        if (filterListTmp[i][0] === selectedFilter) {
+            filterListTmp[i][1] = newQuery;
+            return; // Exit the loop after replacing the pair
+        }
+    }
+    // If the pair doesn't exist, push it to filterListTmp
+    filterListTmp.push([selectedFilter, newQuery]);
+}
+
 function copyToClipboard(text) {
     /** 
     * Copies the given text to the user's clipboard.
@@ -20,7 +31,11 @@ function getImageData(elementId) {
     const currentImage = document.querySelector(elementId);
     const id = $("#id").val();
     const map = $("#map").val();
-    const filterList = [["map", map]];
+
+    replacePair("map", map);
+
+    const filterList = filterListTmp;
+
     const screenWidth = $(window).width();
     const screenHeight = $(window).height();
 
@@ -163,4 +178,16 @@ function switchActiveMap() {
 
     imageElement.data("top", imageTop);
     imageElement.data("left", imageLeft);
+}
+
+function replaceQuestTags(text) {
+    text = text.replace(/\$n/g, "&lt;Name&gt;");
+    text = text.replace(/\$N/g, "&lt;Name&gt;");
+    text = text.replace(/\$b/g, "<br/>");
+    text = text.replace(/\$B/g, "<br/>");
+    text = text.replace(/\$c/g, "&lt;class&gt;");
+    text = text.replace(/\$C/g, "&lt;Class&gt;");
+    text = text.replace(/\$r/g, "&lt;race&gt;");
+    text = text.replace(/\$R/g, "&lt;Race&gt;");
+    return text;
 }

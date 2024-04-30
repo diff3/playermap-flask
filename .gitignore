@@ -1,6 +1,7 @@
 assets
 .DS_Store
 config.conf
+!config.yaml-dist
 *.pyc
 __pycache__
 test.py
@@ -9,5 +10,9 @@ virtualenv
 *.json
 WoW-Map.png
 .vscode
+<<<<<<< HEAD
 config.yaml
 !config.yaml-dist
+=======
+
+>>>>>>> 5ec0196d911e8bc4010de8d7daa692c270f54ce9
