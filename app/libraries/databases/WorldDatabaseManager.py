@@ -54,7 +54,7 @@ class WorldDatabaseManager:
             WorldModels.SpawnsGameobjects.ignored,
             WorldModels.GameobjectTemplate.name,
             WorldModels.SpawnsGameobjects.spawn_entry,
-            WorldModels.GameobjectTemplate.display_id
+            WorldModels.GameobjectTemplate.displayid
         ).filter(
             WorldModels.SpawnsGameobjects.ignored == is_ignored,
             WorldModels.GameobjectTemplate.entry == WorldModels.SpawnsGameobjects.spawn_entry
@@ -71,7 +71,7 @@ class WorldDatabaseManager:
                 'map': record.spawn_map,
                 'name': record.name,
                 'entry': record.spawn_entry,
-                'display_id': record.display_id,
+                'display_id': record.displayid,
                 'class_name': 'objects'
             }
 
