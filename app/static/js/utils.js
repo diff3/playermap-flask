@@ -32,7 +32,17 @@ function getImageData(elementId) {
     const id = $("#id").val();
     const map = $("#map").val();
 
+    filterListTmp = [];
+
     replacePair("map", map);
+
+    var query = $("#query-input").val();
+    var selectedFilter = $("#filters").val();
+
+    if (selectedFilter && query.length > 0) {
+        replacePair(selectedFilter, query);
+        console.log("no ");
+    }
 
     const filterList = filterListTmp;
 

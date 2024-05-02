@@ -291,7 +291,6 @@ def request_server_update(data):
             if len(filtered_spawns) == 0:
                 return
 
-
             recalculated_spawns = position.recalculate(filtered_spawns, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
             spawns_viewport = viewport.recalculate_objects_limited_by_viewport(recalculated_spawns, max_x, max_y, viewport_offset)
             offset = position.calculate_offset_for_items(3000, len(spawns_viewport))
@@ -304,6 +303,7 @@ def request_server_update(data):
         case 'get_gameobjects_button':
             filtered_spawns = filterDictionary(gameObjectsLocations, filters)
             numSpawns = len(filtered_spawns)
+            recalculated_spawns = position.recalculate(filtered_spawns, mapLeftPoint, mapTopPoint, mapWidth, mapHeight, imageWidth, imageHeight, magnification, offset_x, offset_y)
             spawns_viewport = viewport.recalculate_objects_limited_by_viewport(recalculated_spawns, max_x, max_y, viewport_offset)
             offset = position.calculate_offset_for_items(3000, len(spawns_viewport))
 

@@ -69,10 +69,9 @@ $(document).ready(function () {
     $("#info_popup #title").text(data['requested_data']['name']);
     $("#info_popup #subTitle").html(data['requested_data']['subTitle']);
     notes = data['requested_data']['notes'];
-    
+
     // replace quest tags
-    if (data['requested_data']['url'].indexOf("action=show_quest") !== -1)
-    {
+    if (data['requested_data']['url'].indexOf("action=show_quest") !== -1) {
       notes = replaceQuestTags(notes);
     }
     $("#info_popup #notes").html(notes);
@@ -116,7 +115,7 @@ $(document).ready(function () {
     var url = $("#info_popup").attr('data-click_url');
     var textToCopy = ""
     const mapId = $("#map").val();
-    
+
     if (event.metaKey && event.shiftKey) {
       textToCopy = title;
     }
@@ -124,7 +123,7 @@ $(document).ready(function () {
       if ($(this).attr('data-display_id')) {
         var display_id = $(this).attr('data-display_id');
         textToCopy = display_id;
-      } 
+      }
       else {
         console.log("No display id found")
       }
@@ -134,9 +133,11 @@ $(document).ready(function () {
     }
     else if (event.metaKey && class_name == "worldport") {
       textToCopy = `.tel ${title.toLowerCase()}`;
-    } else if (event.shiftKey && url != "no" && url != undefined) {
+    } 
+    else if (event.shiftKey && url != "no" && url != undefined) {
       window.open(url, '_blank');
-    } else if (event.shiftKey && class_name == "taxi") {
+    } 
+    else if (event.shiftKey && class_name == "taxi") {
       url = "https://db.thealphaproject.eu/?action=show_table&table=TaxiNodes&database=alpha_dbc";
       window.open(url, '_blank');
     }
@@ -147,10 +148,9 @@ $(document).ready(function () {
   });
 
   $(document).on("click", function (event) {
-    // button.addEventListener("click", function(event) {
-      event.preventDefault();
-      activeID = getActiveDivId()
-      data = getImageData(`#${activeID}`);
+    event.preventDefault();
+    activeID = getActiveDivId()
+    data = getImageData(`#${activeID}`);
 
 
     if (event.altKey) {
@@ -160,10 +160,6 @@ $(document).ready(function () {
       console.log("offsetX: ", offsetX, " offsetY: ", offsetY);
 
       const currentImage = document.querySelector(`#${activeID}`);
-
-      // console.log("data: ", data);      
-
-
       const mapWidth = currentImage.dataset.mapwidth
       const mapHeight = currentImage.dataset.mapheight
       const mapLeft = currentImage.dataset.mapleft
@@ -173,7 +169,7 @@ $(document).ready(function () {
 
       const imageWidth = currentImage.dataset.width
       const imageHeight = currentImage.dataset.height
-      console.log("mapWidth: ", mapWidth + " mapHeight: " + mapHeight + " mapLeft: " + mapLeft + " mapTop: " + mapTop + " imageWidth: " + imageWidth + " imageHeight: " + imageHeight); ;
+      console.log("mapWidth: ", mapWidth + " mapHeight: " + mapHeight + " mapLeft: " + mapLeft + " mapTop: " + mapTop + " imageWidth: " + imageWidth + " imageHeight: " + imageHeight);;
 
       // how far through image is mouse assuming no magnification
       // (image may start offscreen)
@@ -193,47 +189,28 @@ $(document).ready(function () {
 
   /* SEARCH BAR FUNCTIONS */
 
-
-
-  $("#add-button").click(function () {
-    var selectedFilter = $("#filters").val();
-    var query = $("#query-input").val();
-
-    if (selectedFilter || query) {
-      replacePair(selectedFilter, query);
-      $("#filter-items").append("<span class='filter-item' data-filter='" + selectedFilter + "' data-query='" + query + "'>- " + selectedFilter + ": " + query + "</span>");
-      $("#query-input").val("");
-    }
-    console.log(filterListTmp);
-  });
-
-  $("#filter-items").on("click", ".filter-item", function () {
-    var selectedFilter = $(this).data("filter");
-    var query = $(this).data("query");
-
-    filterListTmp = filterListTmp.filter(function (filter) {
-
-      return !(filter[0] === selectedFilter && filter[1] === query);
-    });
-
-    $(this).remove();
-  });
-
-  $("#search-button").click(function () {
+  function search() {
     var active_id = getActiveDivId(".map-container");
     console.log("active_id: ", active_id);
     data = getImageData(`#${active_id}`)
-
-    console.log(data);
     socket.emit('request_server_update', data);
+  }
+
+  $("#search-button").click(function () {
+    search();
   });
 
   $("#clear-button").click(function () {
     filterListTmp = [];
-    $("#filter-items").empty();
+    $("#query-input").val("");
     removeObjectsFromWorld();
-    $("#spawned").text("");
-    $("#numSpawns").empty();
+  });
+
+  $(document).keypress(function (event) {
+    if (event.which === 13) {
+      event.preventDefault();
+      search();
+    }
   });
 
   // Get references to the necessary elements
@@ -251,11 +228,7 @@ $(document).ready(function () {
     advancedContainer.classList.toggle('hidden');
   });
 
-  $("#map").on("change", function(event) {
+  $("#map").on("change", function (event) {
     switchActiveMap();
-
-
-
-    // Rest of your code handling the select change event
   });
 });

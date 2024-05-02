@@ -274,7 +274,7 @@ class GameobjectTemplate(Base):
 
     entry = Column(MEDIUMINT(8), primary_key=True, server_default=text("'0'"))
     type = Column(TINYINT(3), nullable=False, server_default=text("'0'"))
-    display_id = Column('displayId', MEDIUMINT(8), nullable=False, server_default=text("'0'"))
+    displayid = Column('displayId', MEDIUMINT(8), nullable=False, server_default=text("'0'"))
     name = Column(String(100), nullable=False, index=True, server_default=text("''"))
     faction = Column(SMALLINT(5), nullable=False, server_default=text("'0'"))
     flags = Column(INTEGER(10), nullable=False, server_default=text("'0'"))
